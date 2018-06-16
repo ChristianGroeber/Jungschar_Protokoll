@@ -156,6 +156,12 @@ public class FXMLMainProtokollController implements Initializable {
         });
     }
 
+    /**
+     * This Methode creates one ComboBox for every Leiter that
+     * is in the ArrayList. Currently, these Leiter are only created manually
+     * by the Starter, but the idea is, that they will be read from the MySQL Server.
+     * @param zustaendigPane 
+     */
     private void fillComboBoxZustaendig(TitledPane zustaendigPane) {
         VBox box = new VBox();
         ArrayList<CheckBox> boxes = new ArrayList<>();
