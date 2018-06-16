@@ -93,11 +93,11 @@ public class FXMLMainProtokollController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        try {
-            doNewLine();
-        } catch (IOException ex) {
-            System.out.println(ex);
-        }
+//        try {
+////            doNewLine();
+//        } catch (IOException ex) {
+//            System.out.println(ex);
+//        }
     }
 
     @FXML
@@ -109,32 +109,34 @@ public class FXMLMainProtokollController implements Initializable {
         speichern();
         TitledPane newPane = new TitledPane();
         accordion.getPanes().add(newPane);
-        fillPane();
+        fillPane(newPane);
         panes.add(newPane);
+        newPane.setText("newPane");
     }
 
-    private void fillPane() {
-        //get Newest Pane
-        TitledPane newPane = null;
-        for (TitledPane i : panes) {
-            newPane = i;
-        }
-
+    private void fillPane(TitledPane newPane) {
+        VBox myPanes = new VBox();
         TitledPane time = new TitledPane();
         TitledPane taetigkeit = new TitledPane();
         TitledPane zustaendig = new TitledPane();
         TitledPane material = new TitledPane();
         //add all the new Panes to newPane
-        newPane.setContent(time);
-        newPane.setContent(taetigkeit);
-        newPane.setContent(zustaendig);
-        newPane.setContent(material);
+        myPanes.getChildren().addAll(time, taetigkeit, zustaendig, material);
+        newPane.setContent(myPanes);
+
+        time.setText("Zeit");
+        taetigkeit.setText("Tätigkeit");
+        zustaendig.setText("Zuständig");
+        material.setText("Material");
 
         //add spinner
         fillSpinner(time);
         //fill taetigkeit
         HTMLEditor html = new HTMLEditor();
-        taetigkeit.setContent(html);
+        AnchorPane anch = new AnchorPane();
+        html.setMaxHeight(200);
+        anch.getChildren().add(html);
+        taetigkeit.setContent(anch);
         //fill zustaendig
         fillComboBoxZustaendig(zustaendig);
         //fill material
@@ -145,32 +147,30 @@ public class FXMLMainProtokollController implements Initializable {
         VBox box = new VBox();
         HBox hBox = new HBox();
         hBox.getChildren().add(box);
-        materialPane.setContent(box);
+        materialPane.setContent(hBox);
         Button btn = new Button("Neu");
         hBox.getChildren().add(btn);
-        btn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
-                box.getChildren().add(new TextField());
-            }
+        btn.setOnAction((ActionEvent e) -> {
+            box.getChildren().add(new TextField());
         });
     }
 
     /**
-     * This Methode creates one ComboBox for every Leiter that
-     * is in the ArrayList. Currently, these Leiter are only created manually
-     * by the Starter, but the idea is, that they will be read from the MySQL Server.
-     * @param zustaendigPane 
+     * This Methode creates one ComboBox for every Leiter that is in the
+     * ArrayList. Currently, these Leiter are only created manually by the
+     * Starter, but the idea is, that they will be read from the MySQL Server.
+     *
+     * @param zustaendigPane
      */
     private void fillComboBoxZustaendig(TitledPane zustaendigPane) {
         VBox box = new VBox();
         ArrayList<CheckBox> boxes = new ArrayList<>();
-        zustaendigPane.setContent(box);
         for (Leiter i : leiter) {
             CheckBox ckBox = new CheckBox(i.getName());
             box.getChildren().add(ckBox);
             boxes.add(ckBox);
         }
+        zustaendigPane.setContent(box);
         boxLeiter.add(boxes);
     }
 
@@ -193,12 +193,18 @@ public class FXMLMainProtokollController implements Initializable {
         spnBisM.setValueFactory(bisM);
 
         box.getChildren().addAll(spnVonH, spnVonM, spnBisH, spnBisM);
+        timePane.setContent(box);
 
         ArrayList<Spinner<Integer>> arrSpinners = new ArrayList<>();
         arrSpinners.add(spnVonH);
         arrSpinners.add(spnVonM);
         arrSpinners.add(spnBisH);
         arrSpinners.add(spnBisM);
+        
+        for(Spinner<Integer> i : arrSpinners){
+            i.setMaxWidth(100);
+            i.setEditable(true);
+        }
 
         spinners.add(arrSpinners);
     }
@@ -217,44 +223,44 @@ public class FXMLMainProtokollController implements Initializable {
     }
 
     private void speichern() throws UnsupportedEncodingException, IOException {
-        p.addZustaendig(getZustaendigLeiter());
-        p.setBeginnH(spnVonH.getValue());
-        p.setBeginnM(spnVonM.getValue());
-        p.setEndeH(spnBisH.getValue());
-        p.setEndeM(spnBisM.getValue());
-        p.setTaetigkeit(txtTaetigkeit.getHtmlText());
-        table.setProgrammpunkt(p);
-        createHtml();
-        protokoll.writeToFile(text, protokoll.getNextLine2());
-        protokoll.setNextLine2(protokoll.getNextLine2() + m.toArray(text).size());
+//        p.addZustaendig(getZustaendigLeiter());
+//        p.setBeginnH(spnVonH.getValue());
+//        p.setBeginnM(spnVonM.getValue());
+//        p.setEndeH(spnBisH.getValue());
+//        p.setEndeM(spnBisM.getValue());
+//        p.setTaetigkeit(txtTaetigkeit.getHtmlText());
+//        table.setProgrammpunkt(p);
+//        createHtml();
+//        protokoll.writeToFile(text, protokoll.getNextLine2());
+//        protokoll.setNextLine2(protokoll.getNextLine2() + m.toArray(text).size());
     }
 
     private Leiter getZustaendigLeiter() {
-        for (Leiter i : leiter) {
-            for (CheckBox box : boxLeiter) {
-                if (i.getName().equals(box.getText()) && box.isSelected()) {
-                    return i;
-                }
-            }
-        }
+//        for (Leiter i : leiter) {
+////            for (CheckBox box : boxLeiter) {
+////                if (i.getName().equals(box.getText()) && box.isSelected()) {
+////                    return i;
+////                }
+//            }
+//        }
         return null;
     }
 
     private void createHtml() {
-        int line = protokoll.getLine();
-        text += EINSCHUB + "<!--Start line " + line + "-->" + NEWLINE;
-        p.setPunkt(line);
-        text += EINSCHUB + EINSCHUB + EINSCHUB + "<tr>" + NEWLINE;
-        text += EINSCHUB + EINSCHUB + EINSCHUB + EINSCHUB + "<th>" + spnVonH.getValue() + ":" + spnVonM.getValue() + " - "
-                + spnBisH.getValue() + ":" + spnBisM.getValue() + "</th>" + NEWLINE;
-        text += EINSCHUB + EINSCHUB + EINSCHUB + EINSCHUB + "<th>" + txtTaetigkeit.getHtmlText() + "</th>" + NEWLINE;
-        text += EINSCHUB + EINSCHUB + EINSCHUB + EINSCHUB + "<th>" + getZustaendig() + "</th>" + NEWLINE;
-        text += EINSCHUB + EINSCHUB + EINSCHUB + EINSCHUB + "<th>" + getMaterial() + "</th>" + NEWLINE;
-        text += EINSCHUB + EINSCHUB + EINSCHUB + "</tr>" + NEWLINE;
-        text += EINSCHUB + "<!--End line " + protokoll.getLine() + "-->" + NEWLINE;
-
-        p.setHtmlText(text);
-        protokoll.addLine();
+//        int line = protokoll.getLine();
+//        text += EINSCHUB + "<!--Start line " + line + "-->" + NEWLINE;
+//        p.setPunkt(line);
+//        text += EINSCHUB + EINSCHUB + EINSCHUB + "<tr>" + NEWLINE;
+//        text += EINSCHUB + EINSCHUB + EINSCHUB + EINSCHUB + "<th>" + spnVonH.getValue() + ":" + spnVonM.getValue() + " - "
+//                + spnBisH.getValue() + ":" + spnBisM.getValue() + "</th>" + NEWLINE;
+//        text += EINSCHUB + EINSCHUB + EINSCHUB + EINSCHUB + "<th>" + txtTaetigkeit.getHtmlText() + "</th>" + NEWLINE;
+//        text += EINSCHUB + EINSCHUB + EINSCHUB + EINSCHUB + "<th>" + getZustaendig() + "</th>" + NEWLINE;
+//        text += EINSCHUB + EINSCHUB + EINSCHUB + EINSCHUB + "<th>" + getMaterial() + "</th>" + NEWLINE;
+//        text += EINSCHUB + EINSCHUB + EINSCHUB + "</tr>" + NEWLINE;
+//        text += EINSCHUB + "<!--End line " + protokoll.getLine() + "-->" + NEWLINE;
+//
+//        p.setHtmlText(text);
+//        protokoll.addLine();
     }
 
     private String getMaterial() {
@@ -271,14 +277,14 @@ public class FXMLMainProtokollController implements Initializable {
 
     private String getZustaendig() {
         String ret = "";
-        for (int i = 0; i < boxLeiter.size(); i++) {
-            if (boxLeiter.get(i).isSelected()) {
-                if (!ret.equals("")) {
-                    ret += ", ";
-                }
-                ret += boxLeiter.get(i).getText();
-            }
-        }
+//        for (int i = 0; i < boxLeiter.size(); i++) {
+//            if (boxLeiter.get(i).isSelected()) {
+//                if (!ret.equals("")) {
+//                    ret += ", ";
+//                }
+//                ret += boxLeiter.get(i).getText();
+//            }
+//        }
         return ret;
     }
 
