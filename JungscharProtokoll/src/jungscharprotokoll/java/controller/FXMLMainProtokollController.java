@@ -138,7 +138,7 @@ public class FXMLMainProtokollController implements Initializable {
         //fill zustaendig
         fillComboBoxZustaendig(zustaendig);
         //fill material
-
+        fillMaterial(material);
     }
 
     private void fillMaterial(TitledPane materialPane) {
