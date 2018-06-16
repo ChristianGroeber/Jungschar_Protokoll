@@ -12,10 +12,12 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -46,14 +48,9 @@ import jungscharprotokoll.java.model.Timetable;
 public class FXMLMainProtokollController implements Initializable {
 
     @FXML
-    private AnchorPane anchTime;
-    @FXML
     private Button btnNewLine;
     @FXML
     private Button btnWeiter;
-    @FXML
-    private VBox vZustaendig;
-    @FXML
     private VBox vMaterial;
 
     private Programmpunkt p = new Programmpunkt();
@@ -71,8 +68,6 @@ public class FXMLMainProtokollController implements Initializable {
     private String text = "";
     private final String EINSCHUB = protokoll.getEinschub();
     private final String NEWLINE = protokoll.getNewLine();
-    @FXML
-    private HTMLEditor txtTaetigkeit;
 
     private int items = 0;
 
@@ -93,11 +88,11 @@ public class FXMLMainProtokollController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-//        try {
-////            doNewLine();
-//        } catch (IOException ex) {
-//            System.out.println(ex);
-//        }
+        try {
+            doNewLine();
+        } catch (IOException ex) {
+            System.out.println(ex);
+        }
     }
 
     @FXML
@@ -106,7 +101,6 @@ public class FXMLMainProtokollController implements Initializable {
     }
 
     private void doNewLine() throws IOException {
-        speichern();
         TitledPane newPane = new TitledPane();
         accordion.getPanes().add(newPane);
         fillPane(newPane);
@@ -114,15 +108,28 @@ public class FXMLMainProtokollController implements Initializable {
         newPane.setText("newPane");
     }
 
+    private void speichern(TitledPane pane) {
+        VBox myPanes = (VBox) pane.getContent();
+        VBox box = (VBox) myPanes.getChildren();
+        ObservableList<Node> panes2 = box.getChildren();
+        HBox hBoxSpinners = (HBox) panes2.get(0);
+        ObservableList<Node> spinner = hBoxSpinners.getChildren();
+        for (Node i : spinner) {
+            System.out.println(i.getClass());
+        }
+    }
+
     private void fillPane(TitledPane newPane) {
+        HBox box = new HBox();
         VBox myPanes = new VBox();
+        box.getChildren().add(myPanes);
         TitledPane time = new TitledPane();
         TitledPane taetigkeit = new TitledPane();
         TitledPane zustaendig = new TitledPane();
         TitledPane material = new TitledPane();
         //add all the new Panes to newPane
         myPanes.getChildren().addAll(time, taetigkeit, zustaendig, material);
-        newPane.setContent(myPanes);
+        newPane.setContent(box);
 
         time.setText("Zeit");
         taetigkeit.setText("Tätigkeit");
@@ -134,13 +141,24 @@ public class FXMLMainProtokollController implements Initializable {
         //fill taetigkeit
         HTMLEditor html = new HTMLEditor();
         AnchorPane anch = new AnchorPane();
-        html.setMaxHeight(200);
+        html.setMaxSize(550, 200);
         anch.getChildren().add(html);
         taetigkeit.setContent(anch);
         //fill zustaendig
         fillComboBoxZustaendig(zustaendig);
         //fill material
         fillMaterial(material);
+        Button btn = new Button();
+
+        btn.setText("Speichern");
+        btn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                speichern(newPane);
+            }
+        });
+
+        box.getChildren().add(btn);
     }
 
     private void fillMaterial(TitledPane materialPane) {
@@ -200,8 +218,8 @@ public class FXMLMainProtokollController implements Initializable {
         arrSpinners.add(spnVonM);
         arrSpinners.add(spnBisH);
         arrSpinners.add(spnBisM);
-        
-        for(Spinner<Integer> i : arrSpinners){
+
+        for (Spinner<Integer> i : arrSpinners) {
             i.setMaxWidth(100);
             i.setEditable(true);
         }
@@ -215,13 +233,6 @@ public class FXMLMainProtokollController implements Initializable {
         m.openNewWindow("FXMLRunde.fxml", "Runde");
     }
 
-    @FXML
-    private void neu(ActionEvent event) {
-        items++;
-        TextField field = new TextField();
-        vMaterial.getChildren().add(field);
-    }
-
     private void speichern() throws UnsupportedEncodingException, IOException {
 //        p.addZustaendig(getZustaendigLeiter());
 //        p.setBeginnH(spnVonH.getValue());
@@ -233,6 +244,10 @@ public class FXMLMainProtokollController implements Initializable {
 //        createHtml();
 //        protokoll.writeToFile(text, protokoll.getNextLine2());
 //        protokoll.setNextLine2(protokoll.getNextLine2() + m.toArray(text).size());
+    }
+
+    private void getTime() {
+
     }
 
     private Leiter getZustaendigLeiter() {
