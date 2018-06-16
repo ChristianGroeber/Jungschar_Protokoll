@@ -1,0 +1,11 @@
+/* 
+    Created on : 03.06.2018, 12:56:09
+    Author     : chris
+*/
+
+.button-changed:active{
+    -fx-background-color: green;
+}
+.button-changed{
+    -fx-background-color: white;
+}

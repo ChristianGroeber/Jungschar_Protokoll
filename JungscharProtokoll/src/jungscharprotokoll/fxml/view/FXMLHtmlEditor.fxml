@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane id="AnchorPane" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jungscharprotokoll.java.controller.FXMLHtmlEditorController">
+   <children>
+      <TextArea fx:id="txtFile" layoutX="14.0" layoutY="50.0" onDragDetected="#drag" onDragDone="#dragDone" prefHeight="640.0" prefWidth="710.0" />
+      <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#back" text="Back" />
+      <VBox layoutX="744.0" layoutY="50.0" prefHeight="200.0" prefWidth="110.0" spacing="5.0">
+         <children>
+            <Button fx:id="btnBold" mnemonicParsing="false" onAction="#change" text="Fett" />
+            <Button fx:id="btnKursive" mnemonicParsing="false" onAction="#change" text="Kursiv" />
+            <Button fx:id="btnUnderline" mnemonicParsing="false" onAction="#change" text="Unterstrichen" />
+            <Button fx:id="btnBigger" mnemonicParsing="false" onAction="#change" text="Grösser" />
+            <Button fx:id="btnSmaller" mnemonicParsing="false" onAction="#change" text="Kleiner" />
+            <Button fx:id="btnNewLine" mnemonicParsing="false" onAction="#change" text="Neue Zeile" />
+            <Label fx:id="lblFontSize" text="Label" />
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

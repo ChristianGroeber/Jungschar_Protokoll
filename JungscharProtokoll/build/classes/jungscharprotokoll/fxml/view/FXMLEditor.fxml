@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane id="AnchorPane" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jungscharprotokoll.java.controller.FXMLEditorController">
+    <stylesheets>
+        <URL value="@/jungschiprotokoll/resources/StyleButtons.css" />
+    </stylesheets>
+    <children>
+      <VBox fx:id="boxView" layoutX="14.0" layoutY="55.0" prefHeight="567.0" prefWidth="866.0" />
+      <TextField fx:id="txtEingabe" layoutX="14.0" layoutY="638.0" onAction="#enterText" prefHeight="40.0" prefWidth="542.0" promptText="Hier Text eingeben" />
+      <ButtonBar layoutX="14.0" layoutY="14.0" prefHeight="40.0" prefWidth="572.0">
+        <buttons>
+            <CheckBox fx:id="btnFett" mnemonicParsing="false" onAction="#change" text="Fett" />
+            <CheckBox fx:id="btnKursiv" mnemonicParsing="false" onAction="#change" text="Kursiv" />
+            <CheckBox fx:id="btnUnterstrichen" mnemonicParsing="false" onAction="#change" text="Unterstrichen" />
+            <Button fx:id="btnKleiner" mnemonicParsing="false" onAction="#change2" text="Kleiner" />
+            <Button fx:id="btnGrösser" mnemonicParsing="false" onAction="#change2" text="Grösser" />
+        </buttons>
+      </ButtonBar>
+      <Button fx:id="btnHTML" layoutX="814.0" layoutY="645.0" mnemonicParsing="false" onAction="#editHTML" text="Edit HTML" />
+      <TextField fx:id="txtSize" layoutX="601.0" layoutY="22.0" onAction="#changeSize" prefHeight="26.0" prefWidth="94.0" promptText="Textgrösse" text="12" />
+      <Button fx:id="neueTabellenzeile" layoutX="570.0" layoutY="648.0" mnemonicParsing="false" onAction="#change2" text="Neue Tabellenzeile" />
+      <AnchorPane fx:id="anchTime" layoutX="165.0" layoutY="222.0" prefHeight="247.0" prefWidth="522.0">
+         <children>
+            <Spinner fx:id="spnVonH" layoutX="28.0" layoutY="71.0" prefHeight="26.0" prefWidth="102.0" />
+            <Spinner fx:id="spnVonM" layoutX="141.0" layoutY="72.0" prefHeight="26.0" prefWidth="102.0" />
+            <Spinner fx:id="spnBisH" layoutX="276.0" layoutY="73.0" prefHeight="26.0" prefWidth="102.0" />
+            <Spinner fx:id="spnBisM" layoutX="391.0" layoutY="74.0" prefHeight="26.0" prefWidth="102.0" />
+            <Button fx:id="btnEinfuegen" layoutX="433.0" layoutY="179.0" mnemonicParsing="false" onAction="#einfuegen" text="Einfügen" />
+            <Label layoutX="259.0" layoutY="77.0" text=":" />
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>
