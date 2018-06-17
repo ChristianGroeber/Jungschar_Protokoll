@@ -38,8 +38,9 @@
       </HBox>
       <ScrollPane layoutX="14.0" layoutY="55.0" prefHeight="571.0" prefWidth="767.0">
          <content>
-            <Accordion fx:id="accordion" prefHeight="313.0" prefWidth="635.0" />
+            <Accordion fx:id="accordion" prefHeight="554.0" prefWidth="747.0" />
          </content>
       </ScrollPane>
+      <Button layoutX="795.0" layoutY="55.0" mnemonicParsing="false" onAction="#save" text="Speichern" />
    </children>
 </AnchorPane>

@@ -75,28 +75,12 @@ public class FXMLRundeController implements Initializable {
 
     @FXML
     private void save(ActionEvent event) throws IOException {
-        rundeText += html.getHtmlText();
-        protokoll.writeToFile(editHtml(rundeText), protokoll.getInsertIn("<!--Runde-->"));
+        System.out.println(html.getHtmlText());
+//        rundeText += html.getHtmlText();
+//        protokoll.writeToFile(editHtml(rundeText), protokoll.getInsertIn("<!--Runde-->"));
     }
 
-    private String editHtml(String html) {
-        String[] arrString = html.split("");
-        ArrayList<String> arrHtml = new ArrayList<>(Arrays.asList(arrString));
-        for(int i = 0; i < 62; i++){
-            arrHtml.remove(0);
-        }
-        int arrLength = arrHtml.size() - 1;
-        int x = 0;
-        for(int i = arrLength; x < 14; arrLength--){
-            arrHtml.remove(arrLength);
-            x++;
-        }
-        StringBuilder sb = new StringBuilder();
-        for(String i : arrHtml){
-            sb.append(i);
-        }
-        return sb.toString();
-    }
+    
 
     @FXML
     private void newP(ActionEvent event) {

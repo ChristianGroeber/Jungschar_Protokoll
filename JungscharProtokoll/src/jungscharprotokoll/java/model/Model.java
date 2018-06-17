@@ -36,4 +36,23 @@ public class Model {
         ret = new ArrayList<>(Arrays.asList(arr));
         return ret;
     }
+    
+    public  String editHtml(String html) {
+        String[] arrString = html.split("");
+        ArrayList<String> arrHtml = new ArrayList<>(Arrays.asList(arrString));
+        for(int i = 0; i < 62; i++){
+            arrHtml.remove(0);
+        }
+        int arrLength = arrHtml.size() - 1;
+        int x = 0;
+        for(int i = arrLength; x < 14; arrLength--){
+            arrHtml.remove(arrLength);
+            x++;
+        }
+        StringBuilder sb = new StringBuilder();
+        for(String i : arrHtml){
+            sb.append(i);
+        }
+        return sb.toString();
+    }
 }

@@ -62,6 +62,7 @@ public class FXMLMainProtokollController implements Initializable {
     private final ArrayList<TitledPane> panes = new ArrayList<>();
     private final ArrayList<ArrayList<Spinner<Integer>>> spinners = new ArrayList<>();
     private final ArrayList<ArrayList<TextField>> textField = new ArrayList<>();
+    private final ArrayList<HTMLEditor> htmlText = new ArrayList<>();
 
     private Materialliste liste = new Materialliste();
 
@@ -106,17 +107,75 @@ public class FXMLMainProtokollController implements Initializable {
         fillPane(newPane);
         panes.add(newPane);
         newPane.setText("newPane");
+        einmaligesMaterial = new ArrayList<>();
     }
 
-    private void speichern(TitledPane pane) {
-        VBox myPanes = (VBox) pane.getContent();
-        VBox box = (VBox) myPanes.getChildren();
-        ObservableList<Node> panes2 = box.getChildren();
-        HBox hBoxSpinners = (HBox) panes2.get(0);
-        ObservableList<Node> spinner = hBoxSpinners.getChildren();
-        for (Node i : spinner) {
-            System.out.println(i.getClass());
+    @FXML
+    private void save(ActionEvent event) throws IOException {
+        speichern();
+    }
+
+    private void speichern() throws IOException {
+        String html = "";
+        for (int i = 0; i < boxLeiter.size(); i++) {
+            int line = protokoll.getLine();
+            html += EINSCHUB + "<!--Start line " + line + "-->" + NEWLINE;
+            html += EINSCHUB + EINSCHUB + EINSCHUB + "<tr>" + NEWLINE
+                    + saveTime(i) + saveTaetigkeit(i) + saveZustaendig(i) + saveMaterial(i)
+                    + EINSCHUB + EINSCHUB + EINSCHUB + "</tr>" + NEWLINE
+                    + EINSCHUB + "<!--ENDE line " + line + "-->" + NEWLINE;
         }
+        protokoll.writeToFile(html, protokoll.getNextLine(0));
+    }
+
+    private String saveTime(int index) {
+        String htmlRet = "";
+        ArrayList<Spinner<Integer>> spinner = spinners.get(index);
+        htmlRet += EINSCHUB + EINSCHUB + EINSCHUB + EINSCHUB + "<th><p>" + spinner.get(0).getValue()
+                + ":" + spinner.get(1).getValue() + " - " + spinner.get(2).getValue()
+                + ":" + spinner.get(3).getValue() + "</p></th>" + NEWLINE;
+        return htmlRet;
+    }
+
+    private String saveTaetigkeit(int index) {
+        String htmlRet = "";
+        htmlRet += EINSCHUB + EINSCHUB + EINSCHUB + EINSCHUB + "<th>"
+                + new Model().editHtml(htmlText.get(index).getHtmlText()) + "</th>" + NEWLINE;
+        return htmlRet;
+    }
+
+    private String saveZustaendig(int index) {
+        String htmlRet = "";
+        ArrayList<CheckBox> box = boxLeiter.get(index);
+        ArrayList<String> zustaendig = new ArrayList<>();
+        for (CheckBox i : box) {
+            if (i.isSelected()) {
+                zustaendig.add(i.getText());
+            }
+        }
+        htmlRet += EINSCHUB + EINSCHUB + EINSCHUB + EINSCHUB + "<th><p>";
+        for (int i = 0; i < zustaendig.size(); i++) {
+            if (i != 0) {
+                htmlRet += ", ";
+            }
+            htmlRet += zustaendig.get(i);
+        }
+        htmlRet += "</p></th>" + NEWLINE;
+        return htmlRet;
+    }
+
+    private String saveMaterial(int index) {
+        String htmlRet = "";
+        ArrayList<TextField> fields = textField.get(index);
+        htmlRet += EINSCHUB + EINSCHUB + EINSCHUB + EINSCHUB + "<th><p>";
+        for (int i = 0; i < fields.size(); i++) {
+            if (i != 0) {
+                htmlRet += ", ";
+            }
+            htmlRet += fields.get(i).getText();
+        }
+        htmlRet += "</p></th>" + NEWLINE;
+        return htmlRet;
     }
 
     private void fillPane(TitledPane newPane) {
@@ -140,6 +199,7 @@ public class FXMLMainProtokollController implements Initializable {
         fillSpinner(time);
         //fill taetigkeit
         HTMLEditor html = new HTMLEditor();
+        htmlText.add(html);
         AnchorPane anch = new AnchorPane();
         html.setMaxSize(550, 200);
         anch.getChildren().add(html);
@@ -148,19 +208,9 @@ public class FXMLMainProtokollController implements Initializable {
         fillComboBoxZustaendig(zustaendig);
         //fill material
         fillMaterial(material);
-        Button btn = new Button();
-
-        btn.setText("Speichern");
-        btn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                speichern(newPane);
-            }
-        });
-
-        box.getChildren().add(btn);
     }
 
+    ArrayList<TextField> einmaligesMaterial = new ArrayList<>();
     private void fillMaterial(TitledPane materialPane) {
         VBox box = new VBox();
         HBox hBox = new HBox();
@@ -169,7 +219,9 @@ public class FXMLMainProtokollController implements Initializable {
         Button btn = new Button("Neu");
         hBox.getChildren().add(btn);
         btn.setOnAction((ActionEvent e) -> {
-            box.getChildren().add(new TextField());
+            TextField field = new TextField();
+            box.getChildren().add(field);
+            einmaligesMaterial.add(field);
         });
     }
 
@@ -231,19 +283,6 @@ public class FXMLMainProtokollController implements Initializable {
     private void weiter(ActionEvent event) throws IOException {
         speichern();
         m.openNewWindow("FXMLRunde.fxml", "Runde");
-    }
-
-    private void speichern() throws UnsupportedEncodingException, IOException {
-//        p.addZustaendig(getZustaendigLeiter());
-//        p.setBeginnH(spnVonH.getValue());
-//        p.setBeginnM(spnVonM.getValue());
-//        p.setEndeH(spnBisH.getValue());
-//        p.setEndeM(spnBisM.getValue());
-//        p.setTaetigkeit(txtTaetigkeit.getHtmlText());
-//        table.setProgrammpunkt(p);
-//        createHtml();
-//        protokoll.writeToFile(text, protokoll.getNextLine2());
-//        protokoll.setNextLine2(protokoll.getNextLine2() + m.toArray(text).size());
     }
 
     private void getTime() {
