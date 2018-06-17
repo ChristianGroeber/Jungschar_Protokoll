@@ -45,38 +45,8 @@ public class Timetable {
 
         return p;
     }
-
-    public void sort() {
-        Programmpunkt[] tempList = programmpunkte.toArray(new Programmpunkt[0]);
-        for (int i = 0; i < tempList.length; i++) {
-            for (int j = 0; j < tempList.length; j++) {
-                Programmpunkt p2 = null;
-                try {
-                    p2 = tempList[j + 1];
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    break;
-                }
-                Programmpunkt p1 = tempList[j];
-
-                if (p1.getBeginnH() > p2.getBeginnH()) {
-                    tempList[j + 1] = p1;
-                    tempList[j] = p2;
-                } else if (p1.getBeginnH() == p2.getBeginnH()) {
-                    if (p1.getBeginnM() > p2.getBeginnM()) {
-                        tempList[j + 1] = p1;
-                        tempList[j] = p2;
-                    }
-                }
-            }
-        }
-        programmpunkte = new ArrayList<>(Arrays.asList(tempList));
-        for (Programmpunkt i : programmpunkte) {
-            System.out.println(i.getBeginnH() + ":" + i.getBeginnM() + " - " + i.getEndeH() + ":" + i.getEndeM());
-        }
-        sortByEnd();
-    }
     
-    public void sortByEnd(){
+    public void sort(){
         Programmpunkt[] tempList = programmpunkte.toArray(new Programmpunkt[0]);
         for (int i = 0; i < tempList.length; i++) {
             for (int j = 0; j < tempList.length; j++) {

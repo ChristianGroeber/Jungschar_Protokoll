@@ -49,7 +49,6 @@ public class Programmpunkt {
     }
 
     public void setHtmlText(String htmlText) {
-        htmlText = "<table border=\"1\">" + htmlText + "</table>";
         this.htmlText = htmlText;
     }
 
