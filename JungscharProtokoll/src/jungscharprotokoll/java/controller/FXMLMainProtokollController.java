@@ -104,10 +104,11 @@ public class FXMLMainProtokollController implements Initializable {
     private void doNewLine() throws IOException {
         TitledPane newPane = new TitledPane();
         accordion.getPanes().add(newPane);
+        textField.add(new ArrayList<>());
         fillPane(newPane);
         panes.add(newPane);
         newPane.setText("newPane");
-        einmaligesMaterial = new ArrayList<>();
+        listToEdit++;
     }
 
     @FXML
@@ -139,7 +140,7 @@ public class FXMLMainProtokollController implements Initializable {
 
     private String saveTaetigkeit(int index) {
         String htmlRet = "";
-        htmlRet += EINSCHUB + EINSCHUB + EINSCHUB + EINSCHUB + "<th>"
+        htmlRet += EINSCHUB + EINSCHUB + EINSCHUB + EINSCHUB + "<th><p>"
                 + new Model().editHtml(htmlText.get(index).getHtmlText()) + "</th>" + NEWLINE;
         return htmlRet;
     }
@@ -210,8 +211,9 @@ public class FXMLMainProtokollController implements Initializable {
         fillMaterial(material);
     }
 
-    ArrayList<TextField> einmaligesMaterial = new ArrayList<>();
+    private int listToEdit = 0;
     private void fillMaterial(TitledPane materialPane) {
+        
         VBox box = new VBox();
         HBox hBox = new HBox();
         hBox.getChildren().add(box);
@@ -221,7 +223,7 @@ public class FXMLMainProtokollController implements Initializable {
         btn.setOnAction((ActionEvent e) -> {
             TextField field = new TextField();
             box.getChildren().add(field);
-            einmaligesMaterial.add(field);
+            textField.get(listToEdit -1).add(field);
         });
     }
 

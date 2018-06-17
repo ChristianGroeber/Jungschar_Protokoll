@@ -40,7 +40,7 @@ public class Model {
     public  String editHtml(String html) {
         String[] arrString = html.split("");
         ArrayList<String> arrHtml = new ArrayList<>(Arrays.asList(arrString));
-        for(int i = 0; i < 62; i++){
+        for(int i = 0; i < 61; i++){
             arrHtml.remove(0);
         }
         int arrLength = arrHtml.size() - 1;

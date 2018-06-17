@@ -142,14 +142,13 @@ public class Protokoll {
         
         int nextLine = 1;
         for(String i : text){
-            System.out.println(i.contains("<!--End line ") && i.contains(Integer.toString(line)));
             if(i.contains("<!--End line " + line + "-->")){
                 return nextLine;
             }else{
                 nextLine++;
             }
         }
-        return 42;
+        return 58;
     }
     
     public int getNextLine2(){
