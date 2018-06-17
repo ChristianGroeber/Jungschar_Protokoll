@@ -6,24 +6,17 @@
 package jungscharprotokoll.java.controller;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.ImageView;
@@ -55,22 +48,22 @@ public class FXMLMainProtokollController implements Initializable {
 
     private Programmpunkt p = new Programmpunkt();
     private final Timetable table = Timetable.getInstance();
-    private Protokoll protokoll = Protokoll.getInstance();
+    private final Protokoll protokoll = Protokoll.getInstance();
 
     private final ArrayList<Leiter> leiter = Starter.getLeiter();
-    private ArrayList<ArrayList<CheckBox>> boxLeiter = new ArrayList<>();
+    private final ArrayList<ArrayList<CheckBox>> boxLeiter = new ArrayList<>();
     private final ArrayList<TitledPane> panes = new ArrayList<>();
     private final ArrayList<ArrayList<Spinner<Integer>>> spinners = new ArrayList<>();
     private final ArrayList<ArrayList<TextField>> textField = new ArrayList<>();
     private final ArrayList<HTMLEditor> htmlText = new ArrayList<>();
 
-    private Materialliste liste = new Materialliste();
+    private final Materialliste liste = new Materialliste();
 
     private String text = "";
     private final String EINSCHUB = protokoll.getEinschub();
     private final String NEWLINE = protokoll.getNewLine();
 
-    private int items = 0;
+    private final int items = 0;
 
     private final Model m = new Model();
     @FXML
@@ -119,33 +112,47 @@ public class FXMLMainProtokollController implements Initializable {
     private void speichern() throws IOException {
         String html = "";
         for (int i = 0; i < boxLeiter.size(); i++) {
+            Programmpunkt p = new Programmpunkt();
             int line = protokoll.getLine();
             html += EINSCHUB + "<!--Start line " + line + "-->" + NEWLINE;
             html += EINSCHUB + EINSCHUB + EINSCHUB + "<tr>" + NEWLINE
-                    + saveTime(i) + saveTaetigkeit(i) + saveZustaendig(i) + saveMaterial(i)
+                    + saveTime(i, p) + saveTaetigkeit(i, p) + saveZustaendig(i, p) + saveMaterial(i, p)
                     + EINSCHUB + EINSCHUB + EINSCHUB + "</tr>" + NEWLINE
                     + EINSCHUB + "<!--ENDE line " + line + "-->" + NEWLINE;
+            protokoll.addLine();
+            table.setProgrammpunkt(p);
         }
         protokoll.writeToFile(html, protokoll.getNextLine(0));
+        table.sort();
     }
 
-    private String saveTime(int index) {
+    private String saveTime(int index, Programmpunkt p) {
         String htmlRet = "";
         ArrayList<Spinner<Integer>> spinner = spinners.get(index);
+        p.setBeginnH(spinner.get(0).getValue());
+        p.setBeginnM(spinner.get(1).getValue());
+        p.setEndeH(spinner.get(2).getValue());
+        p.setEndeM(spinner.get(3).getValue());
         htmlRet += EINSCHUB + EINSCHUB + EINSCHUB + EINSCHUB + "<th><p>" + spinner.get(0).getValue()
                 + ":" + spinner.get(1).getValue() + " - " + spinner.get(2).getValue()
                 + ":" + spinner.get(3).getValue() + "</p></th>" + NEWLINE;
         return htmlRet;
     }
 
-    private String saveTaetigkeit(int index) {
+    private String saveTaetigkeit(int index, Programmpunkt p) {
         String htmlRet = "";
+        String strHtmlText = "";
+        try{
+            strHtmlText = new Model().editHtml(htmlText.get(index).getHtmlText());
+        }catch(Exception e){
+            System.out.println(e);
+        }
         htmlRet += EINSCHUB + EINSCHUB + EINSCHUB + EINSCHUB + "<th><p>"
-                + new Model().editHtml(htmlText.get(index).getHtmlText()) + "</th>" + NEWLINE;
+                + strHtmlText + "</th>" + NEWLINE;
         return htmlRet;
     }
 
-    private String saveZustaendig(int index) {
+    private String saveZustaendig(int index, Programmpunkt p) {
         String htmlRet = "";
         ArrayList<CheckBox> box = boxLeiter.get(index);
         ArrayList<String> zustaendig = new ArrayList<>();
@@ -165,7 +172,7 @@ public class FXMLMainProtokollController implements Initializable {
         return htmlRet;
     }
 
-    private String saveMaterial(int index) {
+    private String saveMaterial(int index, Programmpunkt p) {
         String htmlRet = "";
         ArrayList<TextField> fields = textField.get(index);
         htmlRet += EINSCHUB + EINSCHUB + EINSCHUB + EINSCHUB + "<th><p>";
@@ -212,8 +219,9 @@ public class FXMLMainProtokollController implements Initializable {
     }
 
     private int listToEdit = 0;
+
     private void fillMaterial(TitledPane materialPane) {
-        
+
         VBox box = new VBox();
         HBox hBox = new HBox();
         hBox.getChildren().add(box);
@@ -223,7 +231,7 @@ public class FXMLMainProtokollController implements Initializable {
         btn.setOnAction((ActionEvent e) -> {
             TextField field = new TextField();
             box.getChildren().add(field);
-            textField.get(listToEdit -1).add(field);
+            textField.get(listToEdit - 1).add(field);
         });
     }
 
@@ -285,63 +293,6 @@ public class FXMLMainProtokollController implements Initializable {
     private void weiter(ActionEvent event) throws IOException {
         speichern();
         m.openNewWindow("FXMLRunde.fxml", "Runde");
-    }
-
-    private void getTime() {
-
-    }
-
-    private Leiter getZustaendigLeiter() {
-//        for (Leiter i : leiter) {
-////            for (CheckBox box : boxLeiter) {
-////                if (i.getName().equals(box.getText()) && box.isSelected()) {
-////                    return i;
-////                }
-//            }
-//        }
-        return null;
-    }
-
-    private void createHtml() {
-//        int line = protokoll.getLine();
-//        text += EINSCHUB + "<!--Start line " + line + "-->" + NEWLINE;
-//        p.setPunkt(line);
-//        text += EINSCHUB + EINSCHUB + EINSCHUB + "<tr>" + NEWLINE;
-//        text += EINSCHUB + EINSCHUB + EINSCHUB + EINSCHUB + "<th>" + spnVonH.getValue() + ":" + spnVonM.getValue() + " - "
-//                + spnBisH.getValue() + ":" + spnBisM.getValue() + "</th>" + NEWLINE;
-//        text += EINSCHUB + EINSCHUB + EINSCHUB + EINSCHUB + "<th>" + txtTaetigkeit.getHtmlText() + "</th>" + NEWLINE;
-//        text += EINSCHUB + EINSCHUB + EINSCHUB + EINSCHUB + "<th>" + getZustaendig() + "</th>" + NEWLINE;
-//        text += EINSCHUB + EINSCHUB + EINSCHUB + EINSCHUB + "<th>" + getMaterial() + "</th>" + NEWLINE;
-//        text += EINSCHUB + EINSCHUB + EINSCHUB + "</tr>" + NEWLINE;
-//        text += EINSCHUB + "<!--End line " + protokoll.getLine() + "-->" + NEWLINE;
-//
-//        p.setHtmlText(text);
-//        protokoll.addLine();
-    }
-
-    private String getMaterial() {
-        String ret = "";
-        for (int i = 0; i < items; i++) {
-            if (i != 0) {
-                ret += ", ";
-            }
-            TextField field = (TextField) vMaterial.getChildren().get(i);
-            ret += field.getText();
-        }
-        return ret;
-    }
-
-    private String getZustaendig() {
-        String ret = "";
-//        for (int i = 0; i < boxLeiter.size(); i++) {
-//            if (boxLeiter.get(i).isSelected()) {
-//                if (!ret.equals("")) {
-//                    ret += ", ";
-//                }
-//                ret += boxLeiter.get(i).getText();
-//            }
-//        }
-        return ret;
     }
 
     @FXML
