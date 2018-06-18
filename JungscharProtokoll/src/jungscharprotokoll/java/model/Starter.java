@@ -6,6 +6,7 @@
 package jungscharprotokoll.java.model;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -78,8 +79,9 @@ public class Starter extends Application {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         connection.connectToMysql("localhost", "test", "root", "");
+        connection.writeToDatabase();
         launch(args);
     }
 

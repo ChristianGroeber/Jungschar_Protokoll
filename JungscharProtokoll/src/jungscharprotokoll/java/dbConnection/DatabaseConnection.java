@@ -37,4 +37,11 @@ public class DatabaseConnection {
             return false;
         }
     }
+    
+    public void writeToDatabase() throws SQLException{
+        Statement stmt = connection.createStatement();
+        String sql = "INSERT INTO testtabelle " 
+                + "VALUES (1,'Groeber', 'Christian', '5606')";
+        stmt.executeUpdate(sql);
+    }
 }
