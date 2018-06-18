@@ -14,6 +14,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
+import jungscharprotokoll.java.dbConnection.DatabaseConnection;
 
 /**
  *
@@ -27,7 +28,8 @@ public class Starter extends Application {
     private WebEngine engine;
     private static final Model model = new Model();
     private static final ArrayList<Leiter> leiter = new ArrayList<>();
-    private static  String lastWindow;
+    private static String lastWindow;
+    private static DatabaseConnection connection = new DatabaseConnection();
 
     @Override
     public void start(Stage primaryStage) throws IOException {
@@ -77,6 +79,7 @@ public class Starter extends Application {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        connection.connectToMysql("localhost", "test", "root", "");
         launch(args);
     }
 
@@ -100,14 +103,15 @@ public class Starter extends Application {
         return leiste;
     }
 
-    public static  String getLastWindow() {
+    public static String getLastWindow() {
         return lastWindow;
     }
 
-    public static  void setLastWindow(String lastWindow) {
+    public static void setLastWindow(String lastWindow) {
         Starter.lastWindow = lastWindow;
     }
-    
-    
 
+    public static DatabaseConnection getDatabaseConnection() {
+        return connection;
+    }
 }

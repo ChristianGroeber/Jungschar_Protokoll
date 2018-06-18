@@ -95,6 +95,13 @@ public class FXMLMainProtokollController implements Initializable {
     }
     
     private void doNewLine() throws IOException {
+        speichern();
+        ArrayList<Programmpunkt> punkte = table.getProgrammpunkt();
+        if(!punkte.isEmpty()){
+            for(Programmpunkt i : punkte){
+                
+            }
+        }
         for(int i = 0; i < panes.size(); i++){
             panes.get(i).setText(spinners.get(i).get(0).getValue() + ":" + spinners.get(i).get(1).getValue()
             + " - " + spinners.get(i).get(2).getValue() + ":" + spinners.get(i).get(3).getValue());
