@@ -8,6 +8,7 @@ package jungscharprotokoll.java.controller;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -39,32 +40,34 @@ import jungscharprotokoll.java.model.Timetable;
  * @author chris
  */
 public class FXMLMainProtokollController implements Initializable {
-    
+
     @FXML
     private Button btnNewLine;
     @FXML
     private Button btnWeiter;
     private VBox vMaterial;
-    
+
     private Programmpunkt p = new Programmpunkt();
     private final Timetable table = Timetable.getInstance();
     private final Protokoll protokoll = Protokoll.getInstance();
-    
+
     private final ArrayList<Leiter> leiter = Starter.getLeiter();
     private final ArrayList<ArrayList<CheckBox>> boxLeiter = new ArrayList<>();
     private final ArrayList<TitledPane> panes = new ArrayList<>();
     private final ArrayList<ArrayList<Spinner<Integer>>> spinners = new ArrayList<>();
     private final ArrayList<ArrayList<TextField>> textField = new ArrayList<>();
     private final ArrayList<HTMLEditor> htmlText = new ArrayList<>();
-    
+
     private final Materialliste liste = new Materialliste();
-    
+
     private String text = "";
     private final String EINSCHUB = protokoll.getEinschub();
     private final String NEWLINE = protokoll.getNewLine();
-    
+
     private final int items = 0;
-    
+
+    private ArrayList<Integer> alreadyWritten = new ArrayList<>();
+
     private final Model m = new Model();
     @FXML
     private ImageView btnStart;
@@ -88,23 +91,25 @@ public class FXMLMainProtokollController implements Initializable {
             System.out.println(ex);
         }
     }
-    
+
     @FXML
     private void newLine(ActionEvent event) throws IOException {
         speichern();
         doNewLine();
     }
-    
+
     private void doNewLine() throws IOException {
         ArrayList<Programmpunkt> punkte = table.getProgrammpunkt();
-        if(!punkte.isEmpty()){
-            for(Programmpunkt i : punkte){
-                
-            }
-        }
-        for(int i = 0; i < panes.size(); i++){
+
+        Programmpunkt p = new Programmpunkt();
+        table.setProgrammpunkt(p);
+        p.setPunkt(protokoll.getLine());
+        protokoll.addLine();
+
+        //Setting the titles for all panes - which is the time.
+        for (int i = 0; i < panes.size(); i++) {
             panes.get(i).setText(spinners.get(i).get(0).getValue() + ":" + spinners.get(i).get(1).getValue()
-            + " - " + spinners.get(i).get(2).getValue() + ":" + spinners.get(i).get(3).getValue());
+                    + " - " + spinners.get(i).get(2).getValue() + ":" + spinners.get(i).get(3).getValue());
         }
         TitledPane newPane = new TitledPane();
         accordion.getPanes().add(newPane);
@@ -114,33 +119,42 @@ public class FXMLMainProtokollController implements Initializable {
         newPane.setText("newPane");
         listToEdit++;
     }
-    
+
     @FXML
     private void save(ActionEvent event) throws IOException {
         speichern();
     }
-    
+
     private void speichern() throws IOException {
+        ArrayList<Programmpunkt> punkte = table.getProgrammpunkt();
+        //this is so that every punkt is only once in the table.
         for (int i = 0; i < boxLeiter.size(); i++) {
-            String html = "";
-            Programmpunkt p = new Programmpunkt();
-            int line = protokoll.getLine();
-            html += EINSCHUB + "<!--Start line " + line + "-->" + NEWLINE;
-            html += EINSCHUB + EINSCHUB + EINSCHUB + "<tr>" + NEWLINE
-                    + saveTime(i, p) + saveTaetigkeit(i, p) + saveZustaendig(i, p) + saveMaterial(i, p)
-                    + EINSCHUB + EINSCHUB + EINSCHUB + "</tr>" + NEWLINE;
-            html += EINSCHUB + "<!--ENDE line " + line + "-->" + NEWLINE;
-            p.setHtmlText(html);
-            protokoll.addLine();
-            table.setProgrammpunkt(p);
+            for (Programmpunkt x : punkte) {
+                if (!alreadyWritten.contains(x.getPunkt())) {
+                    String html = "";
+                    int line = protokoll.getLine();
+                    html += EINSCHUB + "<!--Start line " + line + "-->" + NEWLINE;
+                    html += EINSCHUB + EINSCHUB + EINSCHUB + "<tr>" + NEWLINE
+                            + saveTime(i, p) + saveTaetigkeit(i, p) + saveZustaendig(i, p) + saveMaterial(i, p)
+                            + EINSCHUB + EINSCHUB + EINSCHUB + "</tr>" + NEWLINE;
+                    html += EINSCHUB + "<!--ENDE line " + line + "-->" + NEWLINE;
+                    x.setHtmlText(html);
+                    alreadyWritten.add(x.getPunkt());
+                }
+            }
         }
         table.sort();
-        ArrayList<Programmpunkt> punkte = table.getProgrammpunkt();
-        for(Programmpunkt p : punkte){
+        
+        //here I need to make it so that every punkt only appears once in the protokol.
+        //Approach: checking if the punkt is written already in the protokoll itself.
+        protokoll.deleteProtokolRows();
+        ArrayList<Programmpunkt> punkteSorted = table.getProgrammpunkt();
+        Collections.reverse(punkteSorted);
+        for (Programmpunkt p : punkteSorted) {
             protokoll.writeToFile(p.getHtmlText(), 58);
         }
     }
-    
+
     private String saveTime(int index, Programmpunkt p) {
         String htmlRet = "";
         ArrayList<Spinner<Integer>> spinner = spinners.get(index);
@@ -153,7 +167,7 @@ public class FXMLMainProtokollController implements Initializable {
                 + ":" + spinner.get(3).getValue() + "</p></th>" + NEWLINE;
         return htmlRet;
     }
-    
+
     private String saveTaetigkeit(int index, Programmpunkt p) {
         String htmlRet = "";
         String strHtmlText = "";
@@ -166,7 +180,7 @@ public class FXMLMainProtokollController implements Initializable {
                 + strHtmlText + "</th>" + NEWLINE;
         return htmlRet;
     }
-    
+
     private String saveZustaendig(int index, Programmpunkt p) {
         String htmlRet = "";
         ArrayList<CheckBox> box = boxLeiter.get(index);
@@ -186,7 +200,7 @@ public class FXMLMainProtokollController implements Initializable {
         htmlRet += "</p></th>" + NEWLINE;
         return htmlRet;
     }
-    
+
     private String saveMaterial(int index, Programmpunkt p) {
         String htmlRet = "";
         ArrayList<TextField> fields = textField.get(index);
@@ -200,7 +214,7 @@ public class FXMLMainProtokollController implements Initializable {
         htmlRet += "</p></th>" + NEWLINE;
         return htmlRet;
     }
-    
+
     private void fillPane(TitledPane newPane) {
         HBox box = new HBox();
         VBox myPanes = new VBox();
@@ -212,7 +226,7 @@ public class FXMLMainProtokollController implements Initializable {
         //add all the new Panes to newPane
         myPanes.getChildren().addAll(time, taetigkeit, zustaendig, material);
         newPane.setContent(box);
-        
+
         time.setText("Zeit");
         taetigkeit.setText("Tätigkeit");
         zustaendig.setText("Zuständig");
@@ -232,11 +246,11 @@ public class FXMLMainProtokollController implements Initializable {
         //fill material
         fillMaterial(material);
     }
-    
+
     private int listToEdit = 0;
-    
+
     private void fillMaterial(TitledPane materialPane) {
-        
+
         VBox box = new VBox();
         HBox hBox = new HBox();
         hBox.getChildren().add(box);
@@ -268,7 +282,7 @@ public class FXMLMainProtokollController implements Initializable {
         zustaendigPane.setContent(box);
         boxLeiter.add(boxes);
     }
-    
+
     private void fillSpinner(TitledPane timePane) {
         HBox box = new HBox();
         Programmpunkt p = table.getLastProgrammpunkt();
@@ -276,43 +290,43 @@ public class FXMLMainProtokollController implements Initializable {
         SpinnerValueFactory<Integer> vonM = new SpinnerValueFactory.IntegerSpinnerValueFactory(getNewestPunkt().get(1), 60);
         SpinnerValueFactory<Integer> bisH = new SpinnerValueFactory.IntegerSpinnerValueFactory(getNewestPunkt().get(0), 24);
         SpinnerValueFactory<Integer> bisM = new SpinnerValueFactory.IntegerSpinnerValueFactory(getNewestPunkt().get(1), 60);
-        
+
         Spinner<Integer> spnVonH = new Spinner();
         Spinner<Integer> spnVonM = new Spinner();
         Spinner<Integer> spnBisH = new Spinner();
         Spinner<Integer> spnBisM = new Spinner();
-        
+
         spnVonH.setValueFactory(vonH);
         spnVonM.setValueFactory(vonM);
         spnBisH.setValueFactory(bisH);
         spnBisM.setValueFactory(bisM);
-        
+
         box.getChildren().addAll(spnVonH, spnVonM, spnBisH, spnBisM);
         timePane.setContent(box);
-        
+
         ArrayList<Spinner<Integer>> arrSpinners = new ArrayList<>();
         arrSpinners.add(spnVonH);
         arrSpinners.add(spnVonM);
         arrSpinners.add(spnBisH);
         arrSpinners.add(spnBisM);
-        
+
         for (Spinner<Integer> i : arrSpinners) {
             i.setMaxWidth(100);
             i.setEditable(true);
         }
-        
+
         spinners.add(arrSpinners);
     }
-    
-    private ArrayList<Integer> getNewestPunkt(){
+
+    private ArrayList<Integer> getNewestPunkt() {
         ArrayList<Integer> ret = new ArrayList<>();
-            int newestH = 0;
-            int newestM = 0;
-        for(ArrayList<Spinner<Integer>> i : spinners){
-            if(i.get(2).getValue() > newestH){
+        int newestH = 0;
+        int newestM = 0;
+        for (ArrayList<Spinner<Integer>> i : spinners) {
+            if (i.get(2).getValue() > newestH) {
                 newestH = i.get(2).getValue();
             }
-            if(i.get(3).getValue() > newestM){
+            if (i.get(3).getValue() > newestM) {
                 newestM = i.get(3).getValue();
             }
         }
@@ -320,13 +334,13 @@ public class FXMLMainProtokollController implements Initializable {
         ret.add(newestM);
         return ret;
     }
-    
+
     @FXML
     private void weiter(ActionEvent event) throws IOException {
         speichern();
         m.openNewWindow("FXMLRunde.fxml", "Runde");
     }
-    
+
     @FXML
     private void goTo(MouseEvent event) throws IOException {
         String string = ((ImageView) event.getSource()).getId();

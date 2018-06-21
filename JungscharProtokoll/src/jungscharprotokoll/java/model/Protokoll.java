@@ -26,12 +26,12 @@ public class Protokoll {
     private File file;
 
     private Tester test = new Tester();
-    
+
     private final String EINSCHUB = "     ";
     private final String NEWLINE = "\n";
-    
+
     private int line = 0;
-    
+
     private int nextLine = 57;
 
     private Protokoll() {
@@ -52,15 +52,14 @@ public class Protokoll {
     public void setFile(File f) {
         this.file = f;
     }
-    
-    public String getEinschub(){
+
+    public String getEinschub() {
         return EINSCHUB;
     }
-    
-    public String getNewLine(){
+
+    public String getNewLine() {
         return NEWLINE;
     }
-      
 
     /**
      * Writes to the file that it's saved
@@ -127,52 +126,52 @@ public class Protokoll {
         string = new ArrayList<>(Arrays.asList(arrString));
         return string;
     }
-    
-    public  String getFileString() throws IOException{
+
+    public String getFileString() throws IOException {
         ArrayList<String> text = getFileText();
         String ret = "";
-        for(String i : text){
+        for (String i : text) {
             ret += i + NEWLINE;
         }
         return ret;
     }
-    
-    public int getNextLine(int line) throws IOException{
+
+    public int getNextLine(int line) throws IOException {
         ArrayList<String> text = getFileText();
-        
+
         int nextLine = 1;
-        for(String i : text){
-            if(i.contains("<!--End line " + line + "-->")){
+        for (String i : text) {
+            if (i.contains("<!--End line " + line + "-->")) {
                 return nextLine;
-            }else{
+            } else {
                 nextLine++;
             }
         }
         return 58;
     }
-    
-    public int getNextLine2(){
+
+    public int getNextLine2() {
         return nextLine;
     }
-    
-    public void setNextLine2(int i){
+
+    public void setNextLine2(int i) {
         nextLine = i;
     }
-    
-    public int getLine(){
+
+    public int getLine() {
         return line;
-    } 
-    
-    public void addLine(){
+    }
+
+    public void addLine() {
         line = line + 1;
     }
-    
-    public int getInsertIn(String comment) throws IOException{
+
+    public int getInsertIn(String comment) throws IOException {
         int insert = 0;
         ArrayList<String> text = getFileText();
         int x = 0;
-        for(String i : text){
-            if(i.contains(comment)){
+        for (String i : text) {
+            if (i.contains(comment)) {
                 insert = x;
                 break;
             }
@@ -180,5 +179,40 @@ public class Protokoll {
         }
         insert = insert + 1;
         return insert;
+    }
+
+    public void deleteProtokolRows() throws IOException {
+        ArrayList<String> text = getFileText();
+        for (String i : text) {
+            if (i.equals("<!--Protokoll-->")) {
+                int toDelete = text.indexOf(i);
+                while (true) {
+                    if(i.equals("<!--ENDE Protokoll-->")){
+                        System.out.println("break");
+                        break;
+                    }
+                    System.out.println(toDelete);
+                    text.remove(toDelete);
+                }
+            }
+        }
+        String newText = "";
+        for(String i : text){
+            newText += i;
+        }
+        
+        overwrite(newText);
+    }
+
+    private void overwrite(String html) throws UnsupportedEncodingException, IOException {
+        String title = file.getName();
+        String path = file.getAbsolutePath();
+
+        file.delete();
+
+        File newFile = new File(title + ".html");
+        file = newFile;
+
+        writeToFile(html, 0);
     }
 }

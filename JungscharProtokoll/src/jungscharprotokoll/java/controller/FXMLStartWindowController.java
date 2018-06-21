@@ -188,7 +188,6 @@ public class FXMLStartWindowController implements Initializable {
         text += einschub + einschub + einschub + "</tr>" + newLine;
         text += einschub + einschub + "</table>" + newLine;
         text += "<!--ENDE Tabelle Kopf-->" + newLine;
-        text += "<!--Protokoll-->" + newLine;
         text += einschub + einschub + "<table border=\"1\">" + newLine;
         text += einschub + einschub + einschub + "<tr>" + newLine;
         text += einschub + einschub + einschub + einschub + "<th><b>Zeit</b></th>" + newLine;
@@ -197,6 +196,7 @@ public class FXMLStartWindowController implements Initializable {
         text += einschub + einschub + einschub + einschub + "<th><b>Material</b></th>" + newLine;
         text += einschub + einschub + einschub + "</tr>" + newLine;
         text += einschub + einschub + "</table>" + newLine;
+        text += "<!--Protokoll-->" + newLine;
         text += "<!--ENDE Protokoll-->" + newLine;
         text += "<!--Runde-->" + newLine;
         text += "<!--ENDE Runde-->" + newLine;
