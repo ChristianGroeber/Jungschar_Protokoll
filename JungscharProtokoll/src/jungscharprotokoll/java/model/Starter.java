@@ -36,13 +36,6 @@ public class Starter extends Application {
     public void start(Stage primaryStage) throws IOException {
         erstelleLeiter();
         Starter.stage = primaryStage;
-//        Parent root = FXMLLoader.load(getClass().getResource("/jungscharprotokoll/resources/fxml/FXMLStartWindow.fxml"));
-//
-//        scene = new Scene(root);
-//        primaryStage.setTitle("Start!");
-//        primaryStage.setScene(scene);
-//        primaryStage.show();
-
         model.openNewWindow("FXMLStart.fxml", "Setup");
     }
 
@@ -80,8 +73,8 @@ public class Starter extends Application {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws SQLException {
-        connection.connectToMysql("localhost", "test", "root", "");
-        connection.writeToDatabase();
+//        connection.connectToMysql("localhost", "test", "root", "");
+//        connection.writeToDatabase();
         launch(args);
     }
 

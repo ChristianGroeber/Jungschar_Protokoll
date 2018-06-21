@@ -91,11 +91,11 @@ public class FXMLMainProtokollController implements Initializable {
     
     @FXML
     private void newLine(ActionEvent event) throws IOException {
+        speichern();
         doNewLine();
     }
     
     private void doNewLine() throws IOException {
-        speichern();
         ArrayList<Programmpunkt> punkte = table.getProgrammpunkt();
         if(!punkte.isEmpty()){
             for(Programmpunkt i : punkte){
@@ -128,8 +128,8 @@ public class FXMLMainProtokollController implements Initializable {
             html += EINSCHUB + "<!--Start line " + line + "-->" + NEWLINE;
             html += EINSCHUB + EINSCHUB + EINSCHUB + "<tr>" + NEWLINE
                     + saveTime(i, p) + saveTaetigkeit(i, p) + saveZustaendig(i, p) + saveMaterial(i, p)
-                    + EINSCHUB + EINSCHUB + EINSCHUB + "</tr>" + NEWLINE
-                    + EINSCHUB + "<!--ENDE line " + line + "-->" + NEWLINE;
+                    + EINSCHUB + EINSCHUB + EINSCHUB + "</tr>" + NEWLINE;
+            html += EINSCHUB + "<!--ENDE line " + line + "-->" + NEWLINE;
             p.setHtmlText(html);
             protokoll.addLine();
             table.setProgrammpunkt(p);
@@ -137,7 +137,7 @@ public class FXMLMainProtokollController implements Initializable {
         table.sort();
         ArrayList<Programmpunkt> punkte = table.getProgrammpunkt();
         for(Programmpunkt p : punkte){
-            protokoll.writeToFile(p.getHtmlText(), protokoll.getNextLine(0));
+            protokoll.writeToFile(p.getHtmlText(), 58);
         }
     }
     
