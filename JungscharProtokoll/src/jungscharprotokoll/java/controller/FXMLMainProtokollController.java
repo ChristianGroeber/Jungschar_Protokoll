@@ -66,7 +66,7 @@ public class FXMLMainProtokollController implements Initializable {
 
     private final int items = 0;
 
-    private ArrayList<Integer> alreadyWritten = new ArrayList<>();
+    private final ArrayList<Integer> alreadyWritten = new ArrayList<>();
 
     private final Model m = new Model();
     @FXML
@@ -128,30 +128,31 @@ public class FXMLMainProtokollController implements Initializable {
     private void speichern() throws IOException {
         ArrayList<Programmpunkt> punkte = table.getProgrammpunkt();
         //this is so that every punkt is only once in the table.
-        for (int i = 0; i < boxLeiter.size(); i++) {
-            for (Programmpunkt x : punkte) {
-                if (!alreadyWritten.contains(x.getPunkt())) {
-                    String html = "";
-                    int line = protokoll.getLine();
-                    html += EINSCHUB + "<!--Start line " + line + "-->" + NEWLINE;
-                    html += EINSCHUB + EINSCHUB + EINSCHUB + "<tr>" + NEWLINE
-                            + saveTime(i, p) + saveTaetigkeit(i, p) + saveZustaendig(i, p) + saveMaterial(i, p)
-                            + EINSCHUB + EINSCHUB + EINSCHUB + "</tr>" + NEWLINE;
-                    html += EINSCHUB + "<!--ENDE line " + line + "-->" + NEWLINE;
-                    x.setHtmlText(html);
-                    alreadyWritten.add(x.getPunkt());
-                }
+        int counter = 0;
+        for (Programmpunkt x : punkte) {
+            System.out.println("Punkt " + x.getPunkt() + " is contained: " + alreadyWritten.contains(x.getPunkt()));
+            if (!alreadyWritten.contains(x.getPunkt())) {
+                String html = "";
+                int line = x.getPunkt();
+                html += EINSCHUB + "<!--Start line " + line + "-->" + NEWLINE;
+                html += EINSCHUB + EINSCHUB + EINSCHUB + "<tr>" + NEWLINE
+                        + saveTime(counter, p) + saveTaetigkeit(counter, p) + saveZustaendig(counter, p) + saveMaterial(counter, p)
+                        + EINSCHUB + EINSCHUB + EINSCHUB + "</tr>" + NEWLINE;
+                html += EINSCHUB + "<!--ENDE line " + line + "-->" + NEWLINE;
+                x.setHtmlText(html);
+                alreadyWritten.add(x.getPunkt());
             }
+            counter++;
         }
         table.sort();
-        
+
         //here I need to make it so that every punkt only appears once in the protokol.
         //Approach: checking if the punkt is written already in the protokoll itself.
         protokoll.deleteProtokolRows();
         ArrayList<Programmpunkt> punkteSorted = table.getProgrammpunkt();
         Collections.reverse(punkteSorted);
         for (Programmpunkt p : punkteSorted) {
-            protokoll.writeToFile(p.getHtmlText(), 58);
+            protokoll.writeToFile(p.getHtmlText(), 59);
         }
     }
 

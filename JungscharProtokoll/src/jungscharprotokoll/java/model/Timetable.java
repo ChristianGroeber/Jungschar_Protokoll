@@ -19,7 +19,6 @@ public class Timetable {
     private static Timetable instance;
 
     public Timetable() {
-        programmpunkte.add(new Programmpunkt(00, 00, 00, 00));
     }
 
     public static Timetable getInstance() {

@@ -183,22 +183,22 @@ public class Protokoll {
 
     public void deleteProtokolRows() throws IOException {
         ArrayList<String> text = getFileText();
-        for (String i : text) {
-            if (i.equals("<!--Protokoll-->")) {
-                int toDelete = text.indexOf(i);
+        for (int i = 0; i < text.size(); i++) {
+            if (text.get(i).equals("<!--Protokoll-->")) {
+                int toDelete = text.indexOf(text.get(i)) + 1;
                 while (true) {
-                    if(i.equals("<!--ENDE Protokoll-->")){
-                        System.out.println("break");
+                    if(text.get(toDelete).equals("<!--ENDE Protokoll-->")){
                         break;
                     }
-                    System.out.println(toDelete);
                     text.remove(toDelete);
                 }
             }
         }
+        
         String newText = "";
+        
         for(String i : text){
-            newText += i;
+            newText += i + NEWLINE;
         }
         
         overwrite(newText);
@@ -210,7 +210,7 @@ public class Protokoll {
 
         file.delete();
 
-        File newFile = new File(title + ".html");
+        File newFile = new File(title);
         file = newFile;
 
         writeToFile(html, 0);

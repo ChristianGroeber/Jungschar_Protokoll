@@ -44,7 +44,6 @@ public class Programmpunkt {
     }
 
     public String getHtmlText() {
-        System.out.println(htmlText);
         return htmlText;
     }
 
