@@ -100,6 +100,12 @@ public class FXMLMainProtokollController implements Initializable {
 
     private void doNewLine() throws IOException {
         ArrayList<Programmpunkt> punkte = table.getProgrammpunkt();
+        
+        if(!punkte.isEmpty()){
+            for(Programmpunkt i : punkte){
+                
+            }
+        }
 
         Programmpunkt p = new Programmpunkt();
         table.setProgrammpunkt(p);
