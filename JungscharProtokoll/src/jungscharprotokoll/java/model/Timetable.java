@@ -47,7 +47,7 @@ public class Timetable {
     
     public void sort(){
         Programmpunkt[] tempList = programmpunkte.toArray(new Programmpunkt[0]);
-        for (int i = 0; i < tempList.length; i++) {
+        for (Programmpunkt tempList1 : tempList) {
             for (int j = 0; j < tempList.length; j++) {
                 Programmpunkt p2 = null;
                 try {
@@ -57,6 +57,7 @@ public class Timetable {
                 }
                 Programmpunkt p1 = tempList[j];
 
+                System.out.println("EndeH1 " + p1.getEndeH() + " Endeh2 " + p2.getEndeH());
                 if (p1.getEndeH() > p2.getEndeH()) {
                     tempList[j + 1] = p1;
                     tempList[j] = p2;
@@ -69,8 +70,5 @@ public class Timetable {
             }
         }
         programmpunkte = new ArrayList<>(Arrays.asList(tempList));
-        for (Programmpunkt i : programmpunkte) {
-            System.out.println(i.getBeginnH() + ":" + i.getBeginnM() + " - " + i.getEndeH() + ":" + i.getEndeM());
-        }
     }
 }

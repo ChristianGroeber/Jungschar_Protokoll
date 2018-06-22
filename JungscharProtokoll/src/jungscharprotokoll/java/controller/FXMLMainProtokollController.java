@@ -130,13 +130,12 @@ public class FXMLMainProtokollController implements Initializable {
         //this is so that every punkt is only once in the table.
         int counter = 0;
         for (Programmpunkt x : punkte) {
-            System.out.println("Punkt " + x.getPunkt() + " is contained: " + alreadyWritten.contains(x.getPunkt()));
             if (!alreadyWritten.contains(x.getPunkt())) {
                 String html = "";
                 int line = x.getPunkt();
                 html += EINSCHUB + "<!--Start line " + line + "-->" + NEWLINE;
                 html += EINSCHUB + EINSCHUB + EINSCHUB + "<tr>" + NEWLINE
-                        + saveTime(counter, p) + saveTaetigkeit(counter, p) + saveZustaendig(counter, p) + saveMaterial(counter, p)
+                        + saveTime(counter, x) + saveTaetigkeit(counter, x) + saveZustaendig(counter, x) + saveMaterial(counter, x)
                         + EINSCHUB + EINSCHUB + EINSCHUB + "</tr>" + NEWLINE;
                 html += EINSCHUB + "<!--ENDE line " + line + "-->" + NEWLINE;
                 x.setHtmlText(html);
@@ -161,11 +160,14 @@ public class FXMLMainProtokollController implements Initializable {
         ArrayList<Spinner<Integer>> spinner = spinners.get(index);
         p.setBeginnH(spinner.get(0).getValue());
         p.setBeginnM(spinner.get(1).getValue());
+        System.out.println("Spinner getValue2 " + spinner.get(2).getValue());
         p.setEndeH(spinner.get(2).getValue());
+        System.out.println("Spinner getValue3 " + spinner.get(3).getValue());
         p.setEndeM(spinner.get(3).getValue());
         htmlRet += EINSCHUB + EINSCHUB + EINSCHUB + EINSCHUB + "<th><p>" + spinner.get(0).getValue()
                 + ":" + spinner.get(1).getValue() + " - " + spinner.get(2).getValue()
                 + ":" + spinner.get(3).getValue() + "</p></th>" + NEWLINE;
+        System.out.println("Saved Time");
         return htmlRet;
     }
 
