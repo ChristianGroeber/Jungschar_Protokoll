@@ -287,10 +287,15 @@ public class FXMLMainProtokollController implements Initializable {
     private void fillSpinner(TitledPane timePane) {
         HBox box = new HBox();
         Programmpunkt p = table.getLastProgrammpunkt();
-        SpinnerValueFactory<Integer> vonH = new SpinnerValueFactory.IntegerSpinnerValueFactory(getNewestPunkt().get(0), 24);
-        SpinnerValueFactory<Integer> vonM = new SpinnerValueFactory.IntegerSpinnerValueFactory(getNewestPunkt().get(1), 60);
-        SpinnerValueFactory<Integer> bisH = new SpinnerValueFactory.IntegerSpinnerValueFactory(getNewestPunkt().get(0), 24);
-        SpinnerValueFactory<Integer> bisM = new SpinnerValueFactory.IntegerSpinnerValueFactory(getNewestPunkt().get(1), 60);
+        SpinnerValueFactory<Integer> vonH = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 24);
+        SpinnerValueFactory<Integer> vonM = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 60);
+        SpinnerValueFactory<Integer> bisH = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 24);
+        SpinnerValueFactory<Integer> bisM = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 60);
+        
+        vonH.setValue(getNewestPunkt().get(0));
+        vonM.setValue(getNewestPunkt().get(1));
+        bisH.setValue(getNewestPunkt().get(0));
+        bisM.setValue(getNewestPunkt().get(1));
 
         Spinner<Integer> spnVonH = new Spinner();
         Spinner<Integer> spnVonM = new Spinner();
