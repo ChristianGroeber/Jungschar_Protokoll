@@ -13,6 +13,8 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Accordion;
+import javafx.scene.control.TitledPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.web.HTMLEditor;
@@ -35,12 +37,15 @@ public class FXMLRundeController implements Initializable {
     private ImageView btnRunde;
     @FXML
     private ImageView btnAnsicht;
-    @FXML
     private HTMLEditor html;
 
     private String rundeText;
 
     private Protokoll protokoll = Protokoll.getInstance();
+    @FXML
+    private Accordion accordion;
+    
+    private ArrayList<TitledPane> panes = new ArrayList<>();
 
     /**
      * Initializes the controller class.
@@ -48,6 +53,28 @@ public class FXMLRundeController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
+    }
+
+    @FXML
+    private void save(ActionEvent event) throws IOException {
+        System.out.println(html.getHtmlText());
+//        rundeText += html.getHtmlText();
+//        protokoll.writeToFile(editHtml(rundeText), protokoll.getInsertIn("<!--Runde-->"));
+    }
+    
+    private void newPane(){
+        TitledPane pane = new TitledPane();
+        pane.setText("NewPane");
+        HTMLEditor html = new HTMLEditor();
+        pane.setContent(html);
+        accordion.getPanes().add(pane);
+    }
+
+    
+
+    @FXML
+    private void newP(ActionEvent event) {
+        newPane();
     }
 
     @FXML
@@ -71,20 +98,6 @@ public class FXMLRundeController implements Initializable {
             default:
                 System.out.println("Unknown Button");
         }
-    }
-
-    @FXML
-    private void save(ActionEvent event) throws IOException {
-        System.out.println(html.getHtmlText());
-//        rundeText += html.getHtmlText();
-//        protokoll.writeToFile(editHtml(rundeText), protokoll.getInsertIn("<!--Runde-->"));
-    }
-
-    
-
-    @FXML
-    private void newP(ActionEvent event) {
-        
     }
 
 }
