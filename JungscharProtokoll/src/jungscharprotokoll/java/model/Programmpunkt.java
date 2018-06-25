@@ -21,7 +21,25 @@ public class Programmpunkt {
     private String taetigkeit;
     private final ArrayList<Leiter> zustaendig;
     private String htmlText;
+    private String htmlTaetigkeit;
     private int punkt;
+    private ArrayList<String> material = new ArrayList<>();
+
+    public ArrayList<String> getMaterial() {
+        return material;
+    }
+
+    public void setMaterial(String material) {
+        this.material.add(material);
+    }
+
+    public String getHtmlTaetigkeit() {
+        return htmlTaetigkeit;
+    }
+
+    public void setHtmlTaetigkeit(String htmlTaetigkeit) {
+        this.htmlTaetigkeit = htmlTaetigkeit;
+    }
 
     public int getPunkt() {
         return punkt;

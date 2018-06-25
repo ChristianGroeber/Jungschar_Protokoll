@@ -16,6 +16,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextField;
@@ -100,10 +101,63 @@ public class FXMLMainProtokollController implements Initializable {
 
     private void doNewLine() throws IOException {
         ArrayList<Programmpunkt> punkte = table.getProgrammpunkt();
-        
-        if(!punkte.isEmpty()){
-            for(Programmpunkt i : punkte){
+
+        if (!punkte.isEmpty()) {
+            for (Programmpunkt i : punkte) {
+                TitledPane pane = new TitledPane();
+                HBox box = createTitledPanes();
+                pane.setText(i.getBeginnH() + ":" + i.getBeginnM() + " - " + i.getEndeH() + ":" + i.getEndeM());
+                //fill Spinners
+                TitledPane timePane = (TitledPane) box.getChildren().get(0);
+                ArrayList<Integer> times = new ArrayList<>();
+                times.add(i.getBeginnH());
+                times.add(i.getBeginnM());
+                times.add(i.getEndeH());
+                times.add(i.getEndeM());
+                fillSpinner(timePane, times);
+
+                //fill Tätigkeit
+                HTMLEditor html = new HTMLEditor();
+                htmlText.add(html);
+                AnchorPane anch = new AnchorPane();
+                html.setMaxSize(550, 200);
+                anch.getChildren().add(html);
+                TitledPane taetigkeit = (TitledPane) box.getChildren().get(1);
+                taetigkeit.setContent(anch);
+                html.setHtmlText(i.getHtmlTaetigkeit());
+                //fill Comboboxes
+                ArrayList<CheckBox> checkBoxes = new ArrayList<>();
+                for (Leiter x : leiter) {
+                    CheckBox checkBox = new CheckBox();
+                    checkBoxes.add(checkBox);
+                    checkBox.setText(x.getName());
+                    for (Leiter p : i.getZustaendig()) {
+                        if (p.getName().equals(checkBox.getText())) {
+                            checkBox.setSelected(true);
+                        }
+                    }
+                }
+                boxLeiter.add(checkBoxes);
+                //fill Material
+                TitledPane materialPane = (TitledPane) box.getChildren().get(3);
+                VBox vBox = new VBox();
+                HBox hBox = new HBox();
+                hBox.getChildren().add(vBox);
+                materialPane.setContent(hBox);
+                Button btn = new Button("Neu");
+                hBox.getChildren().add(btn);
+                btn.setOnAction((ActionEvent e) -> {
+                    TextField field = new TextField();
+                    vBox.getChildren().add(field);
+                    textField.get(listToEdit - 1).add(field);
+                });
                 
+                for (String str : i.getMaterial()) {
+                    TextField alreadyField = new TextField();
+                    alreadyField.setText(str);
+                    vBox.getChildren().add(alreadyField);
+                    textField.get(listToEdit - 1).add(alreadyField);
+                }
             }
         }
 
@@ -146,6 +200,7 @@ public class FXMLMainProtokollController implements Initializable {
                 html += EINSCHUB + "<!--ENDE line " + line + "-->" + NEWLINE;
                 x.setHtmlText(html);
                 alreadyWritten.add(x.getPunkt());
+                x.setHtmlTaetigkeit(saveTaetigkeit(counter, x));
             }
             counter++;
         }
@@ -219,12 +274,31 @@ public class FXMLMainProtokollController implements Initializable {
                 htmlRet += ", ";
             }
             htmlRet += fields.get(i).getText();
+            p.setMaterial(fields.get(i).getText());
         }
         htmlRet += "</p></th>" + NEWLINE;
         return htmlRet;
     }
 
     private void fillPane(TitledPane newPane) {
+        HBox box = createTitledPanes();
+        //add spinner
+        fillSpinner((TitledPane) box.getChildren().get(0));
+        //fill taetigkeit
+        HTMLEditor html = new HTMLEditor();
+        htmlText.add(html);
+        AnchorPane anch = new AnchorPane();
+        html.setMaxSize(550, 200);
+        anch.getChildren().add(html);
+        TitledPane taetigkeit = (TitledPane) box.getChildren().get(1);
+        taetigkeit.setContent(anch);
+        //fill zustaendig
+        fillComboBoxZustaendig((TitledPane) box.getChildren().get(2));
+        //fill material
+        fillMaterial((TitledPane) box.getChildren().get(3));
+    }
+
+    private HBox createTitledPanes() {
         HBox box = new HBox();
         VBox myPanes = new VBox();
         box.getChildren().add(myPanes);
@@ -232,28 +306,12 @@ public class FXMLMainProtokollController implements Initializable {
         TitledPane taetigkeit = new TitledPane();
         TitledPane zustaendig = new TitledPane();
         TitledPane material = new TitledPane();
-        //add all the new Panes to newPane
-        myPanes.getChildren().addAll(time, taetigkeit, zustaendig, material);
-        newPane.setContent(box);
 
         time.setText("Zeit");
         taetigkeit.setText("Tätigkeit");
         zustaendig.setText("Zuständig");
         material.setText("Material");
-
-        //add spinner
-        fillSpinner(time);
-        //fill taetigkeit
-        HTMLEditor html = new HTMLEditor();
-        htmlText.add(html);
-        AnchorPane anch = new AnchorPane();
-        html.setMaxSize(550, 200);
-        anch.getChildren().add(html);
-        taetigkeit.setContent(anch);
-        //fill zustaendig
-        fillComboBoxZustaendig(zustaendig);
-        //fill material
-        fillMaterial(material);
+        return box;
     }
 
     private int listToEdit = 0;
@@ -292,6 +350,46 @@ public class FXMLMainProtokollController implements Initializable {
         boxLeiter.add(boxes);
     }
 
+    private void fillSpinner(TitledPane timePane, ArrayList<Integer> times) {
+        HBox box = new HBox();
+        Programmpunkt p = table.getLastProgrammpunkt();
+        SpinnerValueFactory<Integer> vonH = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 24);
+        SpinnerValueFactory<Integer> vonM = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 60);
+        SpinnerValueFactory<Integer> bisH = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 24);
+        SpinnerValueFactory<Integer> bisM = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 60);
+
+        vonH.setValue(times.get(0));
+        vonM.setValue(times.get(1));
+        bisH.setValue(times.get(2));
+        bisM.setValue(times.get(3));
+
+        Spinner<Integer> spnVonH = new Spinner();
+        Spinner<Integer> spnVonM = new Spinner();
+        Spinner<Integer> spnBisH = new Spinner();
+        Spinner<Integer> spnBisM = new Spinner();
+
+        spnVonH.setValueFactory(vonH);
+        spnVonM.setValueFactory(vonM);
+        spnBisH.setValueFactory(bisH);
+        spnBisM.setValueFactory(bisM);
+
+        box.getChildren().addAll(spnVonH, spnVonM, spnBisH, spnBisM);
+        timePane.setContent(box);
+
+        ArrayList<Spinner<Integer>> arrSpinners = new ArrayList<>();
+        arrSpinners.add(spnVonH);
+        arrSpinners.add(spnVonM);
+        arrSpinners.add(spnBisH);
+        arrSpinners.add(spnBisM);
+
+        for (Spinner<Integer> i : arrSpinners) {
+            i.setMaxWidth(100);
+            i.setEditable(true);
+        }
+
+        spinners.add(arrSpinners);
+    }
+
     private void fillSpinner(TitledPane timePane) {
         HBox box = new HBox();
         Programmpunkt p = table.getLastProgrammpunkt();
@@ -299,7 +397,7 @@ public class FXMLMainProtokollController implements Initializable {
         SpinnerValueFactory<Integer> vonM = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 60);
         SpinnerValueFactory<Integer> bisH = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 24);
         SpinnerValueFactory<Integer> bisM = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 60);
-        
+
         vonH.setValue(getNewestPunkt().get(0));
         vonM.setValue(getNewestPunkt().get(1));
         bisH.setValue(getNewestPunkt().get(0));
