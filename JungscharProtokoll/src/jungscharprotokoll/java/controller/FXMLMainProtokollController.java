@@ -86,6 +86,10 @@ public class FXMLMainProtokollController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        ArrayList<Programmpunkt> punkte = table.getProgrammpunkt();
+        if (!punkte.isEmpty()) {
+            loadOlderProgrammpunkte(punkte);
+        }
         try {
             doNewLine();
         } catch (IOException ex) {
@@ -101,67 +105,6 @@ public class FXMLMainProtokollController implements Initializable {
 
     private void doNewLine() throws IOException {
         ArrayList<Programmpunkt> punkte = table.getProgrammpunkt();
-
-        if (!punkte.isEmpty()) {
-            for (Programmpunkt i : punkte) {
-                TitledPane pane = new TitledPane();
-                HBox box = createTitledPanes();
-                VBox vBox  = (VBox) box.getChildren().get(0);
-                pane.setText(i.getBeginnH() + ":" + i.getBeginnM() + " - " + i.getEndeH() + ":" + i.getEndeM());
-                //fill Spinners
-                TitledPane timePane = (TitledPane) vBox.getChildren().get(0);
-                ArrayList<Integer> times = new ArrayList<>();
-                times.add(i.getBeginnH());
-                times.add(i.getBeginnM());
-                times.add(i.getEndeH());
-                times.add(i.getEndeM());
-                fillSpinner(timePane, times);
-
-                //fill Tätigkeit
-                HTMLEditor html = new HTMLEditor();
-                htmlText.add(html);
-                AnchorPane anch = new AnchorPane();
-                html.setMaxSize(550, 200);
-                anch.getChildren().add(html);
-                TitledPane taetigkeit = (TitledPane) vBox.getChildren().get(1);
-                taetigkeit.setContent(anch);
-                html.setHtmlText(i.getHtmlTaetigkeit());
-                //fill Comboboxes
-                ArrayList<CheckBox> checkBoxes = new ArrayList<>();
-                for (Leiter x : leiter) {
-                    CheckBox checkBox = new CheckBox();
-                    checkBoxes.add(checkBox);
-                    checkBox.setText(x.getName());
-                    for (Leiter p : i.getZustaendig()) {
-                        if (p.getName().equals(checkBox.getText())) {
-                            checkBox.setSelected(true);
-                        }
-                    }
-                }
-                boxLeiter.add(checkBoxes);
-                //fill Material
-                TitledPane materialPane = (TitledPane) vBox.getChildren().get(3);
-                VBox vBox2 = new VBox();
-                HBox hBox = new HBox();
-                hBox.getChildren().add(vBox2);
-                materialPane.setContent(hBox);
-                Button btn = new Button("Neu");
-                hBox.getChildren().add(btn);
-                btn.setOnAction((ActionEvent e) -> {
-                    TextField field = new TextField();
-                    vBox2.getChildren().add(field);
-                    textField.get(listToEdit - 1).add(field);
-                });
-
-                for (String str : i.getMaterial()) {
-                    TextField alreadyField = new TextField();
-                    alreadyField.setText(str);
-                    vBox.getChildren().add(alreadyField);
-                    textField.get(listToEdit - 1).add(alreadyField);
-                }
-            }
-        }
-
         Programmpunkt p = new Programmpunkt();
         table.setProgrammpunkt(p);
         p.setPunkt(protokoll.getLine());
@@ -179,6 +122,68 @@ public class FXMLMainProtokollController implements Initializable {
         panes.add(newPane);
         newPane.setText("newPane");
         listToEdit++;
+    }
+
+    private void loadOlderProgrammpunkte(ArrayList<Programmpunkt> punkte) {
+        for (Programmpunkt i : punkte) {
+            System.out.println("Loading older Programmpunkt N°" + punkte.indexOf(i));
+            TitledPane pane = new TitledPane();
+            accordion.getPanes().add(pane);
+            HBox box = createTitledPanes();
+            VBox vBox = (VBox) box.getChildren().get(0);
+            pane.setText(i.getBeginnH() + ":" + i.getBeginnM() + " - " + i.getEndeH() + ":" + i.getEndeM());
+            //fill Spinners
+            TitledPane timePane = (TitledPane) vBox.getChildren().get(0);
+            ArrayList<Integer> times = new ArrayList<>();
+            times.add(i.getBeginnH());
+            times.add(i.getBeginnM());
+            times.add(i.getEndeH());
+            times.add(i.getEndeM());
+            fillSpinner(timePane, times);
+
+            //fill Tätigkeit
+            HTMLEditor html = new HTMLEditor();
+            htmlText.add(html);
+            AnchorPane anch = new AnchorPane();
+            html.setMaxSize(550, 200);
+            anch.getChildren().add(html);
+            TitledPane taetigkeit = (TitledPane) vBox.getChildren().get(1);
+            taetigkeit.setContent(anch);
+            html.setHtmlText(i.getHtmlTaetigkeit());
+            //fill Comboboxes
+            ArrayList<CheckBox> checkBoxes = new ArrayList<>();
+            for (Leiter x : leiter) {
+                CheckBox checkBox = new CheckBox();
+                checkBoxes.add(checkBox);
+                checkBox.setText(x.getName());
+                for (Leiter p : i.getZustaendig()) {
+                    if (p.getName().equals(checkBox.getText())) {
+                        checkBox.setSelected(true);
+                    }
+                }
+            }
+            boxLeiter.add(checkBoxes);
+            //fill Material
+            TitledPane materialPane = (TitledPane) vBox.getChildren().get(3);
+            VBox vBox2 = new VBox();
+            HBox hBox = new HBox();
+            hBox.getChildren().add(vBox2);
+            materialPane.setContent(hBox);
+            Button btn = new Button("Neu");
+            hBox.getChildren().add(btn);
+            btn.setOnAction((ActionEvent e) -> {
+                TextField field = new TextField();
+                vBox2.getChildren().add(field);
+                textField.get(listToEdit - 1).add(field);
+            });
+
+            for (String str : i.getMaterial()) {
+                TextField alreadyField = new TextField();
+                alreadyField.setText(str);
+                vBox.getChildren().add(alreadyField);
+                textField.get(listToEdit - 1).add(alreadyField);
+            }
+        }
     }
 
     @FXML
@@ -270,7 +275,12 @@ public class FXMLMainProtokollController implements Initializable {
     private String saveMaterial(int index, Programmpunkt p) {
         String htmlRet = "";
         System.out.println("ArrayList<TextField> size: " + textField.size() + " index: " + index);
-        ArrayList<TextField> fields = textField.get(index);
+        ArrayList<TextField> fields = new ArrayList<>();
+        try {
+            fields = textField.get(index);
+        } catch (IndexOutOfBoundsException ex) {
+            System.out.println("Index Out of Bounds: fucked up Material.");
+        }
         htmlRet += EINSCHUB + EINSCHUB + EINSCHUB + EINSCHUB + "<th><p>";
         for (int i = 0; i < fields.size(); i++) {
             if (i != 0) {
@@ -300,10 +310,6 @@ public class FXMLMainProtokollController implements Initializable {
         fillComboBoxZustaendig((TitledPane) vBox.getChildren().get(2));
         //fill material
         fillMaterial((TitledPane) vBox.getChildren().get(3));
-
-        for (int i = 0; i < 4; i++) {
-            System.out.println(vBox.getChildren().get(i).getClass());
-        }
 
         newPane.setContent(box);
     }
