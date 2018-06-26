@@ -106,9 +106,10 @@ public class FXMLMainProtokollController implements Initializable {
             for (Programmpunkt i : punkte) {
                 TitledPane pane = new TitledPane();
                 HBox box = createTitledPanes();
+                VBox vBox  = (VBox) box.getChildren().get(0);
                 pane.setText(i.getBeginnH() + ":" + i.getBeginnM() + " - " + i.getEndeH() + ":" + i.getEndeM());
                 //fill Spinners
-                TitledPane timePane = (TitledPane) box.getChildren().get(0);
+                TitledPane timePane = (TitledPane) vBox.getChildren().get(0);
                 ArrayList<Integer> times = new ArrayList<>();
                 times.add(i.getBeginnH());
                 times.add(i.getBeginnM());
@@ -122,7 +123,7 @@ public class FXMLMainProtokollController implements Initializable {
                 AnchorPane anch = new AnchorPane();
                 html.setMaxSize(550, 200);
                 anch.getChildren().add(html);
-                TitledPane taetigkeit = (TitledPane) box.getChildren().get(1);
+                TitledPane taetigkeit = (TitledPane) vBox.getChildren().get(1);
                 taetigkeit.setContent(anch);
                 html.setHtmlText(i.getHtmlTaetigkeit());
                 //fill Comboboxes
@@ -139,19 +140,19 @@ public class FXMLMainProtokollController implements Initializable {
                 }
                 boxLeiter.add(checkBoxes);
                 //fill Material
-                TitledPane materialPane = (TitledPane) box.getChildren().get(3);
-                VBox vBox = new VBox();
+                TitledPane materialPane = (TitledPane) vBox.getChildren().get(3);
+                VBox vBox2 = new VBox();
                 HBox hBox = new HBox();
-                hBox.getChildren().add(vBox);
+                hBox.getChildren().add(vBox2);
                 materialPane.setContent(hBox);
                 Button btn = new Button("Neu");
                 hBox.getChildren().add(btn);
                 btn.setOnAction((ActionEvent e) -> {
                     TextField field = new TextField();
-                    vBox.getChildren().add(field);
+                    vBox2.getChildren().add(field);
                     textField.get(listToEdit - 1).add(field);
                 });
-                
+
                 for (String str : i.getMaterial()) {
                     TextField alreadyField = new TextField();
                     alreadyField.setText(str);
@@ -191,6 +192,7 @@ public class FXMLMainProtokollController implements Initializable {
         int counter = 0;
         for (Programmpunkt x : punkte) {
             if (!alreadyWritten.contains(x.getPunkt())) {
+                System.out.println("Now importing already existing Programmpunkte Counter: " + counter);
                 String html = "";
                 int line = x.getPunkt();
                 html += EINSCHUB + "<!--Start line " + line + "-->" + NEWLINE;
@@ -267,6 +269,7 @@ public class FXMLMainProtokollController implements Initializable {
 
     private String saveMaterial(int index, Programmpunkt p) {
         String htmlRet = "";
+        System.out.println("ArrayList<TextField> size: " + textField.size() + " index: " + index);
         ArrayList<TextField> fields = textField.get(index);
         htmlRet += EINSCHUB + EINSCHUB + EINSCHUB + EINSCHUB + "<th><p>";
         for (int i = 0; i < fields.size(); i++) {
@@ -282,20 +285,27 @@ public class FXMLMainProtokollController implements Initializable {
 
     private void fillPane(TitledPane newPane) {
         HBox box = createTitledPanes();
+        VBox vBox = (VBox) box.getChildren().get(0);
         //add spinner
-        fillSpinner((TitledPane) box.getChildren().get(0));
+        fillSpinner((TitledPane) vBox.getChildren().get(0));
         //fill taetigkeit
         HTMLEditor html = new HTMLEditor();
         htmlText.add(html);
         AnchorPane anch = new AnchorPane();
         html.setMaxSize(550, 200);
         anch.getChildren().add(html);
-        TitledPane taetigkeit = (TitledPane) box.getChildren().get(1);
+        TitledPane taetigkeit = (TitledPane) vBox.getChildren().get(1);
         taetigkeit.setContent(anch);
         //fill zustaendig
-        fillComboBoxZustaendig((TitledPane) box.getChildren().get(2));
+        fillComboBoxZustaendig((TitledPane) vBox.getChildren().get(2));
         //fill material
-        fillMaterial((TitledPane) box.getChildren().get(3));
+        fillMaterial((TitledPane) vBox.getChildren().get(3));
+
+        for (int i = 0; i < 4; i++) {
+            System.out.println(vBox.getChildren().get(i).getClass());
+        }
+
+        newPane.setContent(box);
     }
 
     private HBox createTitledPanes() {
@@ -311,6 +321,8 @@ public class FXMLMainProtokollController implements Initializable {
         taetigkeit.setText("Tätigkeit");
         zustaendig.setText("Zuständig");
         material.setText("Material");
+
+        myPanes.getChildren().addAll(time, taetigkeit, zustaendig, material);
         return box;
     }
 
