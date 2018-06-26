@@ -261,6 +261,5 @@ public class FXMLStartWindowController implements Initializable {
     private void goTo(MouseEvent event) throws IOException {
         System.out.println("Cannot Switch Windows here");
     }
-    
-    
+
 }

@@ -128,7 +128,6 @@ public class FXMLMainProtokollController implements Initializable {
         for (Programmpunkt i : punkte) {
             System.out.println("Loading older Programmpunkt N°" + punkte.indexOf(i));
             TitledPane pane = new TitledPane();
-            accordion.getPanes().add(pane);
             HBox box = createTitledPanes();
             VBox vBox = (VBox) box.getChildren().get(0);
             pane.setText(i.getBeginnH() + ":" + i.getBeginnM() + " - " + i.getEndeH() + ":" + i.getEndeM());
@@ -150,8 +149,10 @@ public class FXMLMainProtokollController implements Initializable {
             TitledPane taetigkeit = (TitledPane) vBox.getChildren().get(1);
             taetigkeit.setContent(anch);
             html.setHtmlText(i.getHtmlTaetigkeit());
+
             //fill Comboboxes
             ArrayList<CheckBox> checkBoxes = new ArrayList<>();
+            VBox vBox1000 = new VBox();
             for (Leiter x : leiter) {
                 CheckBox checkBox = new CheckBox();
                 checkBoxes.add(checkBox);
@@ -161,8 +162,11 @@ public class FXMLMainProtokollController implements Initializable {
                         checkBox.setSelected(true);
                     }
                 }
+                vBox1000.getChildren().add(checkBox);
             }
             boxLeiter.add(checkBoxes);
+            TitledPane zustaendigPane = (TitledPane) vBox.getChildren().get(2);
+            zustaendigPane.setContent(vBox1000);
             //fill Material
             TitledPane materialPane = (TitledPane) vBox.getChildren().get(3);
             VBox vBox2 = new VBox();
@@ -181,8 +185,16 @@ public class FXMLMainProtokollController implements Initializable {
                 TextField alreadyField = new TextField();
                 alreadyField.setText(str);
                 vBox.getChildren().add(alreadyField);
+
+                //Problem
                 textField.get(listToEdit - 1).add(alreadyField);
             }
+            accordion.getPanes().add(pane);
+            pane.setContent(hBox);
+            pane.setCollapsible(true);
+            HBox hBoxTest = (HBox) pane.getContent();
+            Button button = (Button) hBoxTest.getChildren().get(1);
+            System.out.println(button.getText());
         }
     }
 
