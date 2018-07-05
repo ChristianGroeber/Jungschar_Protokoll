@@ -13,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Vector;
 import java.sql.Date;
+import static java.sql.JDBCType.NULL;
 import java.util.ArrayList;
 import jungscharprotokoll.java.model.Leiter;
 
@@ -68,10 +69,24 @@ public class DatabaseConnection {
         return leiter;
     }
 
-    public void writeNewLeiter(String name, String lastName) throws SQLException {
+    public void writeNewLeiter(String name, String lastName, String email, String gruppe, String position) throws SQLException {
         Statement stmt = connection.createStatement();
         String sql = "INSERT INTO leiter "
-                + "VALUES (" + "'" + getNextLeiterNumber() + "', '" + lastName + "', '" + name + "', '', '', '')";
+                + "VALUES (" + "'" + getNextLeiterNumber() + "', '" + lastName + "', '" + name + "', '";
+        if(email.equals("")){
+            sql += NULL + "', '";
+        }else{
+            sql += email + "', '";
+        }
+        if(gruppe.equals("")){
+            sql += NULL + "', '";
+        }else{
+            sql += gruppe + "', '";
+        }if(position.equals("")){
+            sql += NULL + "')";
+        }else{
+            sql += position + "')";
+        }
         stmt.executeUpdate(sql);
     }
     

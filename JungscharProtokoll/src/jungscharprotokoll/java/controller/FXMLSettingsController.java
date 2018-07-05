@@ -96,7 +96,7 @@ public class FXMLSettingsController implements Initializable {
         String gruppe = ((TextField) ((HBox) box.getChildren().get(4)).getChildren().get(1)).getText();
         
         dbConnection.connectToMysql("localhost", "jungschar", "root", "");
-        dbConnection.writeNewLeiter(name, lastName);
+        dbConnection.writeNewLeiter(name, lastName, email, gruppe, position);
     }
     
 }
