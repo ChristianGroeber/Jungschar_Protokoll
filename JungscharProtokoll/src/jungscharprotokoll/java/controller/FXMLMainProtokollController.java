@@ -334,6 +334,11 @@ public class FXMLMainProtokollController implements Initializable {
         TitledPane zustaendig = new TitledPane();
         TitledPane material = new TitledPane();
 
+        time.setExpanded(false);
+        taetigkeit.setExpanded(false);
+        zustaendig.setExpanded(false);
+        material.setExpanded(false);
+        
         time.setText("Zeit");
         taetigkeit.setText("Tätigkeit");
         zustaendig.setText("Zuständig");
