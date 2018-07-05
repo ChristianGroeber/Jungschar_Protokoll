@@ -14,7 +14,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import jungscharprotokoll.java.model.Protokoll;
@@ -35,6 +37,8 @@ public class FXMLStartController implements Initializable {
     private Button btnNeu;
     @FXML
     private Button btnStart;
+    @FXML
+    private ImageView btnSettings;
 
     /**
      * Initializes the controller class.
@@ -84,6 +88,11 @@ public class FXMLStartController implements Initializable {
         if (!txtNeu.getText().equals("")) {
             btnNeu.setDisable(false);
         }
+    }
+
+    @FXML
+    private void settings(MouseEvent event) throws IOException {
+        Starter.getModel().openNewWindow("FXMLSettings.fxml", "Einstellungen");
     }
 
    
