@@ -338,11 +338,18 @@ public class FXMLMainProtokollController implements Initializable {
         taetigkeit.setExpanded(false);
         zustaendig.setExpanded(false);
         material.setExpanded(false);
-        
+
         time.setText("Zeit");
         taetigkeit.setText("Tätigkeit");
         zustaendig.setText("Zuständig");
         material.setText("Material");
+
+        Button delete = new Button();
+        box.getChildren().add(delete);
+        delete.setText("Löschen");
+        delete.setOnAction((ActionEvent e) -> {
+            
+        });
 
         myPanes.getChildren().addAll(time, taetigkeit, zustaendig, material);
         return box;
