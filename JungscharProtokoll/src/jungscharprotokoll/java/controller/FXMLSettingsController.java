@@ -72,6 +72,11 @@ public class FXMLSettingsController implements Initializable {
 
     @FXML
     private void newLeiter(ActionEvent event) {
+        txtName.setText("");
+        txtLastName.setText("");
+        txtEmail.setText("");
+        txtPosition.setText("");
+        txtGruppe.setText("");
     }
 
     @FXML
