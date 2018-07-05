@@ -30,7 +30,6 @@ import javafx.scene.web.HTMLEditor;
 import jungscharprotokoll.java.model.Leiter;
 import jungscharprotokoll.java.model.Materialliste;
 import jungscharprotokoll.java.model.Model;
-import jungscharprotokoll.java.model.NodeFiller;
 import jungscharprotokoll.java.model.Programmpunkt;
 import jungscharprotokoll.java.model.Protokoll;
 import jungscharprotokoll.java.model.Starter;
@@ -56,7 +55,7 @@ public class FXMLMainProtokollController implements Initializable {
     private final ArrayList<Leiter> leiter = Starter.getLeiter();
     private final ArrayList<ArrayList<CheckBox>> boxLeiter = new ArrayList<>();
     private final ArrayList<TitledPane> panes = new ArrayList<>();
-    private ArrayList<ArrayList<Spinner<Integer>>> spinners = new ArrayList<>();
+    private final ArrayList<ArrayList<Spinner<Integer>>> spinners = new ArrayList<>();
     private final ArrayList<ArrayList<TextField>> textField = new ArrayList<>();
     private final ArrayList<HTMLEditor> htmlText = new ArrayList<>();
 
@@ -130,7 +129,7 @@ public class FXMLMainProtokollController implements Initializable {
         for (Programmpunkt i : punkte) {
             System.out.println("Loading older Programmpunkt N°" + punkte.indexOf(i));
             TitledPane pane = new TitledPane();
-            HBox box = new NodeFiller().createTitledPanes();
+            HBox box = createTitledPanes();
             VBox vBox = (VBox) box.getChildren().get(0);
             pane.setText(i.getBeginnH() + ":" + i.getBeginnM() + " - " + i.getEndeH() + ":" + i.getEndeM());
             //fill Spinners
@@ -306,10 +305,10 @@ public class FXMLMainProtokollController implements Initializable {
     }
 
     private void fillPane(TitledPane newPane) {
-        HBox box = new NodeFiller().createTitledPanes();
+        HBox box = createTitledPanes();
         VBox vBox = (VBox) box.getChildren().get(0);
         //add spinner
-        spinners = new NodeFiller().fillSpinner((TitledPane) vBox.getChildren().get(0), spinners);
+        fillSpinner((TitledPane) vBox.getChildren().get(0));
         //fill taetigkeit
         HTMLEditor html = new HTMLEditor();
         htmlText.add(html);
@@ -326,6 +325,23 @@ public class FXMLMainProtokollController implements Initializable {
         newPane.setContent(box);
     }
 
+    private HBox createTitledPanes() {
+        HBox box = new HBox();
+        VBox myPanes = new VBox();
+        box.getChildren().add(myPanes);
+        TitledPane time = new TitledPane();
+        TitledPane taetigkeit = new TitledPane();
+        TitledPane zustaendig = new TitledPane();
+        TitledPane material = new TitledPane();
+
+        time.setText("Zeit");
+        taetigkeit.setText("Tätigkeit");
+        zustaendig.setText("Zuständig");
+        material.setText("Material");
+
+        myPanes.getChildren().addAll(time, taetigkeit, zustaendig, material);
+        return box;
+    }
 
     private int listToEdit = 0;
 
@@ -402,8 +418,62 @@ public class FXMLMainProtokollController implements Initializable {
         spinners.add(arrSpinners);
     }
 
+    private void fillSpinner(TitledPane timePane) {
+        HBox box = new HBox();
+        Programmpunkt p = table.getLastProgrammpunkt();
+        SpinnerValueFactory<Integer> vonH = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 24);
+        SpinnerValueFactory<Integer> vonM = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 60);
+        SpinnerValueFactory<Integer> bisH = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 24);
+        SpinnerValueFactory<Integer> bisM = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 60);
 
+        vonH.setValue(getNewestPunkt().get(0));
+        vonM.setValue(getNewestPunkt().get(1));
+        bisH.setValue(getNewestPunkt().get(0));
+        bisM.setValue(getNewestPunkt().get(1));
 
+        Spinner<Integer> spnVonH = new Spinner();
+        Spinner<Integer> spnVonM = new Spinner();
+        Spinner<Integer> spnBisH = new Spinner();
+        Spinner<Integer> spnBisM = new Spinner();
+
+        spnVonH.setValueFactory(vonH);
+        spnVonM.setValueFactory(vonM);
+        spnBisH.setValueFactory(bisH);
+        spnBisM.setValueFactory(bisM);
+
+        box.getChildren().addAll(spnVonH, spnVonM, spnBisH, spnBisM);
+        timePane.setContent(box);
+
+        ArrayList<Spinner<Integer>> arrSpinners = new ArrayList<>();
+        arrSpinners.add(spnVonH);
+        arrSpinners.add(spnVonM);
+        arrSpinners.add(spnBisH);
+        arrSpinners.add(spnBisM);
+
+        for (Spinner<Integer> i : arrSpinners) {
+            i.setMaxWidth(100);
+            i.setEditable(true);
+        }
+
+        spinners.add(arrSpinners);
+    }
+
+    private ArrayList<Integer> getNewestPunkt() {
+        ArrayList<Integer> ret = new ArrayList<>();
+        int newestH = 0;
+        int newestM = 0;
+        for (ArrayList<Spinner<Integer>> i : spinners) {
+            if (i.get(2).getValue() > newestH) {
+                newestH = i.get(2).getValue();
+            }
+            if (i.get(3).getValue() > newestM) {
+                newestM = i.get(3).getValue();
+            }
+        }
+        ret.add(newestH);
+        ret.add(newestM);
+        return ret;
+    }
 
     @FXML
     private void weiter(ActionEvent event) throws IOException {
