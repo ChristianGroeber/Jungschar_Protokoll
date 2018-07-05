@@ -125,6 +125,7 @@ public class FXMLMainProtokollController implements Initializable {
     }
 
     private void loadOlderProgrammpunkte(ArrayList<Programmpunkt> punkte) {
+        Collections.reverse(punkte);
         for (Programmpunkt i : punkte) {
             System.out.println("Loading older Programmpunkt N°" + punkte.indexOf(i));
             TitledPane pane = new TitledPane();
