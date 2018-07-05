@@ -178,23 +178,19 @@ public class FXMLMainProtokollController implements Initializable {
             btn.setOnAction((ActionEvent e) -> {
                 TextField field = new TextField();
                 vBox2.getChildren().add(field);
-                textField.get(listToEdit - 1).add(field);
+                textField.get(punkte.indexOf(i)).add(field);
             });
 
+            textField.add(new ArrayList<>());
             for (String str : i.getMaterial()) {
                 TextField alreadyField = new TextField();
                 alreadyField.setText(str);
-                vBox.getChildren().add(alreadyField);
-
-                //Problem
-                textField.get(listToEdit - 1).add(alreadyField);
+                vBox2.getChildren().add(alreadyField);
+                textField.get(punkte.indexOf(i)).add(alreadyField);
             }
             accordion.getPanes().add(pane);
-            pane.setContent(hBox);
+            pane.setContent(box);
             pane.setCollapsible(true);
-            HBox hBoxTest = (HBox) pane.getContent();
-            Button button = (Button) hBoxTest.getChildren().get(1);
-            System.out.println(button.getText());
         }
     }
 
@@ -298,8 +294,10 @@ public class FXMLMainProtokollController implements Initializable {
             if (i != 0) {
                 htmlRet += ", ";
             }
-            htmlRet += fields.get(i).getText();
-            p.setMaterial(fields.get(i).getText());
+            if (!p.matExists(fields.get(i).getText())) {
+                htmlRet += fields.get(i).getText();
+                p.setMaterial(fields.get(i).getText());
+            }
         }
         htmlRet += "</p></th>" + NEWLINE;
         return htmlRet;
@@ -347,7 +345,6 @@ public class FXMLMainProtokollController implements Initializable {
     private int listToEdit = 0;
 
     private void fillMaterial(TitledPane materialPane) {
-
         VBox box = new VBox();
         HBox hBox = new HBox();
         hBox.getChildren().add(box);

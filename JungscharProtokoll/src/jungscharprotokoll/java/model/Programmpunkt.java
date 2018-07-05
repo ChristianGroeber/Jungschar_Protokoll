@@ -28,9 +28,17 @@ public class Programmpunkt {
     public ArrayList<String> getMaterial() {
         return material;
     }
+    
+    public void removeArrayList(){
+        material = new ArrayList<>();
+    }
 
     public void setMaterial(String material) {
         this.material.add(material);
+    }
+    
+    public boolean matExists(String mat){
+        return material.contains(mat);
     }
 
     public String getHtmlTaetigkeit() {
