@@ -13,6 +13,8 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Vector;
 import java.sql.Date;
+import java.util.ArrayList;
+import jungscharprotokoll.java.model.Leiter;
 
 /**
  *
@@ -43,5 +45,17 @@ public class DatabaseConnection {
         String sql = "INSERT INTO testtabelle " 
                 + "VALUES (1,'Groeber', 'Christian', '5606')";
         stmt.executeUpdate(sql);
+    }
+    
+    public ArrayList<Leiter> getLeiter() throws SQLException{
+        ArrayList<Leiter> leiter = new ArrayList<>();
+        Statement stmt = connection.createStatement();
+        String str = "Select * From leiter";
+        ResultSet resultSet = stmt.executeQuery(str);
+        while(resultSet.next()){
+            Leiter l = new Leiter(resultSet.getString(3), resultSet.getString(2));
+            leiter.add(l);
+        }
+        return leiter;
     }
 }

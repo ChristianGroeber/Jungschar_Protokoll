@@ -28,13 +28,13 @@ public class Starter extends Application {
     private WebView view;
     private WebEngine engine;
     private static final Model model = new Model();
-    private static final ArrayList<Leiter> leiter = new ArrayList<>();
+    private static ArrayList<Leiter> leiter = new ArrayList<>();
     private static String lastWindow;
     private static DatabaseConnection connection = new DatabaseConnection();
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        erstelleLeiter();
+//        erstelleLeiter();
         Starter.stage = primaryStage;
         model.openNewWindow("FXMLStart.fxml", "Setup");
     }
@@ -73,8 +73,8 @@ public class Starter extends Application {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws SQLException {
-//        connection.connectToMysql("localhost", "test", "root", "");
-//        connection.writeToDatabase();
+        connection.connectToMysql("localhost", "jungschar", "root", "");
+        leiter = connection.getLeiter();
         launch(args);
     }
 
