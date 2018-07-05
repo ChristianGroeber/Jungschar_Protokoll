@@ -92,11 +92,6 @@ public class FXMLMainProtokollController implements Initializable {
         if (!punkte.isEmpty()) {
             loadOlderProgrammpunkte(punkte);
         }
-        try {
-            doNewLine();
-        } catch (IOException ex) {
-            System.out.println(ex);
-        }
     }
 
     @FXML
@@ -351,7 +346,7 @@ public class FXMLMainProtokollController implements Initializable {
         delete.setText("Löschen");
         delete.setOnAction((ActionEvent e) -> {
             table.removeProgrammpunkt(p);
-            panes.remove(pane);
+            panes.remove(panes.indexOf(pane));
             try {
                 speichern();
             } catch (IOException ex) {
