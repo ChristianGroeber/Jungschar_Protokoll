@@ -10,6 +10,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -118,7 +120,7 @@ public class FXMLMainProtokollController implements Initializable {
         TitledPane newPane = new TitledPane();
         accordion.getPanes().add(newPane);
         textField.add(new ArrayList<>());
-        fillPane(newPane);
+        fillPane(newPane, p);
         panes.add(newPane);
         newPane.setText("newPane");
         listToEdit++;
@@ -129,7 +131,7 @@ public class FXMLMainProtokollController implements Initializable {
         for (Programmpunkt i : punkte) {
             System.out.println("Loading older Programmpunkt N°" + punkte.indexOf(i));
             TitledPane pane = new TitledPane();
-            HBox box = createTitledPanes();
+            HBox box = createTitledPanes(i, pane);
             VBox vBox = (VBox) box.getChildren().get(0);
             pane.setText(i.getBeginnH() + ":" + i.getBeginnM() + " - " + i.getEndeH() + ":" + i.getEndeM());
             //fill Spinners
@@ -202,7 +204,7 @@ public class FXMLMainProtokollController implements Initializable {
 
     private void speichern() throws IOException {
         ArrayList<Programmpunkt> punkte = table.getProgrammpunkt();
-        //this is so that every punkt is only once in the table.
+        //this is so that every punkt is only in the table once.
         int counter = 0;
         for (Programmpunkt x : punkte) {
             if (!alreadyWritten.contains(x.getPunkt())) {
@@ -304,8 +306,8 @@ public class FXMLMainProtokollController implements Initializable {
         return htmlRet;
     }
 
-    private void fillPane(TitledPane newPane) {
-        HBox box = createTitledPanes();
+    private void fillPane(TitledPane newPane, Programmpunkt p) {
+        HBox box = createTitledPanes(p, newPane);
         VBox vBox = (VBox) box.getChildren().get(0);
         //add spinner
         fillSpinner((TitledPane) vBox.getChildren().get(0));
@@ -325,7 +327,7 @@ public class FXMLMainProtokollController implements Initializable {
         newPane.setContent(box);
     }
 
-    private HBox createTitledPanes() {
+    private HBox createTitledPanes(Programmpunkt p, TitledPane pane) {
         HBox box = new HBox();
         VBox myPanes = new VBox();
         box.getChildren().add(myPanes);
@@ -348,7 +350,18 @@ public class FXMLMainProtokollController implements Initializable {
         box.getChildren().add(delete);
         delete.setText("Löschen");
         delete.setOnAction((ActionEvent e) -> {
-            
+            table.removeProgrammpunkt(p);
+            panes.remove(pane);
+            try {
+                speichern();
+            } catch (IOException ex) {
+                System.out.println("Wasn't able to save");
+            }
+            try {
+                new Model().openNewWindow("FXMLMainProtokoll.fxml", "Protokoll");
+            } catch (IOException ex) {
+                System.out.println("Wasn't able to reopen");
+            }
         });
 
         myPanes.getChildren().addAll(time, taetigkeit, zustaendig, material);

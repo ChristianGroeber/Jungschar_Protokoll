@@ -45,6 +45,14 @@ public class Timetable {
         return p;
     }
     
+    public void removeProgrammpunkt(Programmpunkt toDelete){
+        try {
+            programmpunkte.remove(toDelete);
+        } catch (Exception e) {
+            System.out.println("Deleting not possible " + e);
+        }
+    }
+    
     public void sort(){
         Programmpunkt[] tempList = programmpunkte.toArray(new Programmpunkt[0]);
         for (Programmpunkt tempList1 : tempList) {
