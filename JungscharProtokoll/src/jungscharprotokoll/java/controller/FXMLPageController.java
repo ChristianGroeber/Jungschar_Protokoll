@@ -157,6 +157,11 @@ public class FXMLPageController implements Initializable {
     }
 
     @FXML
+    private void upload(ActionEvent event) {
+        
+    }
+
+    @FXML
     private void goTo(MouseEvent event) throws IOException {
         Model m = Starter.getModel();
         String string = ((ImageView) event.getSource()).getId();

@@ -11,7 +11,7 @@
 
 <AnchorPane id="AnchorPane" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jungscharprotokoll.java.controller.FXMLPageController">
    <children>
-      <Accordion layoutY="49.0" prefHeight="651.0" prefWidth="900.0">
+      <Accordion layoutY="49.0" prefHeight="542.0" prefWidth="900.0">
         <panes>
           <TitledPane animated="false" text="Header">
                <content>
@@ -81,5 +81,6 @@
             </ImageView>
          </children>
       </HBox>
+      <Button layoutX="714.0" layoutY="603.0" mnemonicParsing="false" onAction="#upload" prefHeight="84.0" prefWidth="151.0" text="Hochladen" />
    </children>
 </AnchorPane>
