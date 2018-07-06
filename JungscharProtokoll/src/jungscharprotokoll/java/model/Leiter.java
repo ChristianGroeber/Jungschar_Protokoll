@@ -26,6 +26,14 @@ public class Leiter {
         this.gruppe = gruppe;
         this.position = position;
     }
+    
+    public Leiter(String name, String nachname, String email, String gruppe, String position) {
+        this.name = name;
+        this.nachname = nachname;
+        this.email = email;
+        this.gruppe = gruppe;
+        this.position = position;
+    }
 
     public Leiter(String name, String nachname) {
         this.name = name;

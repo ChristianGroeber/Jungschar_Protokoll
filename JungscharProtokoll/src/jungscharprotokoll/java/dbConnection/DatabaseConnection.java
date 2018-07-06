@@ -63,7 +63,7 @@ public class DatabaseConnection {
         String str = "Select * From leiter";
         ResultSet resultSet = stmt.executeQuery(str);
         while (resultSet.next()) {
-            Leiter l = new Leiter(resultSet.getString(3), resultSet.getString(2));
+            Leiter l = new Leiter(resultSet.getString(3), resultSet.getString(2), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6));
             leiter.add(l);
         }
         return leiter;
