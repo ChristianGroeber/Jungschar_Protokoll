@@ -19,6 +19,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import jungscharprotokoll.java.dbConnection.DatabaseConnection;
 import jungscharprotokoll.java.model.Leiter;
@@ -31,8 +32,6 @@ import jungscharprotokoll.java.model.Starter;
  * @author chris
  */
 public class FXMLSettingsController implements Initializable {
-
-    private AnchorPane addLeiter;
 
     private final DatabaseConnection dbConnection = DatabaseConnection.getInstance();
     @FXML
@@ -109,6 +108,16 @@ public class FXMLSettingsController implements Initializable {
             leiterTbl.setItems(data);
         } catch (Exception e) {
         }
+    }
+
+    @FXML
+    private void edit(ActionEvent event) {
+        Leiter l = leiterTbl.getSelectionModel().getSelectedItem();
+        txtName.setText(l.getName());
+        txtLastName.setText(l.getNachname());
+        txtEmail.setText(l.getEmail());
+        txtGruppe.setText(l.getGruppe());
+        txtPosition.setText(l.getPosition());
     }
 
 }

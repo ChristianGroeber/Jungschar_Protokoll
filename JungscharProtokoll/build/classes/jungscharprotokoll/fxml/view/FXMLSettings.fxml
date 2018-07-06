@@ -14,6 +14,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 
 
 <TabPane xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jungscharprotokoll.java.controller.FXMLSettingsController">
@@ -80,15 +81,20 @@
                            <children>
                               <ScrollPane prefHeight="561.0" prefWidth="435.0">
                                  <content>
-                                    <TableView fx:id="leiterTbl" prefHeight="543.0" prefWidth="427.0">
-                                      <columns>
-                                        <TableColumn fx:id="lastNameCol" prefWidth="75.0" text="Name" />
-                                        <TableColumn fx:id="firstNameCol" prefWidth="75.0" text="Vorname" />
-                                          <TableColumn fx:id="eMailCol" prefWidth="75.0" text="E-Mail" />
-                                          <TableColumn fx:id="positionCol" prefWidth="75.0" text="Position" />
-                                          <TableColumn fx:id="gruppeCol" prefWidth="75.0" text="Gruppe" />
-                                      </columns>
-                                    </TableView>
+                                    <VBox>
+                                       <children>
+                                          <TableView fx:id="leiterTbl" prefHeight="511.0" prefWidth="427.0">
+                                            <columns>
+                                              <TableColumn fx:id="firstNameCol" prefWidth="75.0" text="Vorname" />
+                                              <TableColumn fx:id="lastNameCol" prefWidth="75.0" text="Name" />
+                                                <TableColumn fx:id="eMailCol" prefWidth="75.0" text="E-Mail" />
+                                                <TableColumn fx:id="positionCol" prefWidth="75.0" text="Position" />
+                                                <TableColumn fx:id="gruppeCol" prefWidth="75.0" text="Gruppe" />
+                                            </columns>
+                                          </TableView>
+                                          <Button mnemonicParsing="false" onAction="#edit" text="Bearbeiten" />
+                                       </children>
+                                    </VBox>
                                  </content>
                               </ScrollPane>
                            </children>

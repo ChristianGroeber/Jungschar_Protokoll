@@ -28,7 +28,7 @@ public class DatabaseConnection {
     private static DatabaseConnection instance;
 
     public static DatabaseConnection getInstance() {
-        if(instance == null){
+        if (instance == null) {
             instance = new DatabaseConnection();
         }
         return instance;
@@ -73,29 +73,35 @@ public class DatabaseConnection {
         Statement stmt = connection.createStatement();
         String sql = "INSERT INTO leiter "
                 + "VALUES (" + "'" + getNextLeiterNumber() + "', '" + lastName + "', '" + name + "', '";
-        if(email.equals("")){
+        try {
+            if (email.equals("")) {
+                sql += NULL + "', '";
+            } else {
+                sql += email + "', '";
+            }
+        } catch (NullPointerException e) {
             sql += NULL + "', '";
-        }else{
-            sql += email + "', '";
         }
-        if(gruppe.equals("")){
+
+        if (gruppe.equals("")) {
             sql += NULL + "', '";
-        }else{
+        } else {
             sql += gruppe + "', '";
-        }if(position.equals("")){
+        }
+        if (position.equals("")) {
             sql += NULL + "')";
-        }else{
+        } else {
             sql += position + "')";
         }
         stmt.executeUpdate(sql);
     }
-    
-    public int getNextLeiterNumber() throws SQLException{
+
+    public int getNextLeiterNumber() throws SQLException {
         int toReturn = 0;
         Statement stmt = connection.createStatement();
         String str = "Select * From leiter";
         ResultSet resultSet = stmt.executeQuery(str);
-        while(resultSet.next()){
+        while (resultSet.next()) {
             toReturn = resultSet.getInt(1);
         }
         return toReturn + 1;
