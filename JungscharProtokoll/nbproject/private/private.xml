@@ -21,15 +21,6 @@
         </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/D:/Programmieren/Jungschar_Protokoll/JungscharProtokoll/src/jungscharprotokoll/java/model/Leiter.java</file>
-            <file>file:/D:/Programmieren/Jungschar_Protokoll/JungscharProtokoll/src/jungscharprotokoll/java/controller/FXMLMainProtokollController.java</file>
-            <file>file:/D:/Programmieren/Jungschar_Protokoll/JungscharProtokoll/src/jungscharprotokoll/java/model/Programmpunkt.java</file>
-            <file>file:/D:/Programmieren/Jungschar_Protokoll/JungscharProtokoll/src/jungscharprotokoll/java/controller/FXMLPageController.java</file>
-            <file>file:/D:/Programmieren/Jungschar_Protokoll/JungscharProtokoll/src/jungscharprotokoll/java/dbConnection/DatabaseConnection.java</file>
-            <file>file:/D:/Programmieren/Jungschar_Protokoll/JungscharProtokoll/src/jungscharprotokoll/java/model/Starter.java</file>
-            <file>file:/D:/Programmieren/Jungschar_Protokoll/JungscharProtokoll/src/jungscharprotokoll/java/controller/FXMLSettingsController.java</file>
-            <file>file:/D:/Programmieren/Jungschar_Protokoll/JungscharProtokoll/src/jungscharprotokoll/java/controller/FXMLRundeController.java</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>
